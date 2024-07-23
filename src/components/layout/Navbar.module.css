@@ -1,0 +1,10 @@
+.navbar {
+  display: flex;
+  background-color: grey;
+  padding: 1em;
+  justify-content: center;
+}
+
+.title {
+  font-weight: bold;
+}

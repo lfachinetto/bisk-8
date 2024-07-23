@@ -28,6 +28,10 @@ class InstructionSet {
   findByMnemonic(mnemonic: string) {
     return this.instructions.find((instruction) => instruction.mnemonic.toLowerCase() === mnemonic.toLowerCase());
   }
+
+  findByOpcode(opcode: number) {
+    return this.instructions.find((instruction) => instruction.opcode === opcode);
+  }
 }
 
 export default InstructionSet;
