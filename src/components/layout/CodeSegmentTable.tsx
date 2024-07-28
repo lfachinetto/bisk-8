@@ -3,7 +3,7 @@ import styles from "./CodeSegmentTable.module.css";
 import InstructionSet from "../../models/instructionSet";
 
 interface MemoryTableRow {
-  address: number;
+  address: string;
   binary: string;
   hexa: string;
   mnemonic?: string;
@@ -23,7 +23,7 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
 
   const initialTable = memory.map((value, index) => {
     return {
-      address: index,
+      address: index.toString(16).toUpperCase().padStart(2, "0"),
       binary: value.toString(2).padStart(8, "0"),
       hexa: value.toString(16).padStart(2, "0").toUpperCase(),
       mnemonic: isa.findByOpcode(value)?.mnemonic,
@@ -34,15 +34,49 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
   const [memoryTable, setMemoryTable] =
     useState<MemoryTableRow[]>(initialTable);
 
+  // Validate input
+  function validateInput(column: string, value: string) {
+    switch (column) {
+      case "binary":
+        return /^[01]/.test(value);
+      case "hexa":
+        return /^[0-9A-Fa-f]/.test(value);
+      case "mnemonic":
+        return /^[a-zA-Z]/.test(value);
+    }
+  }
+
   // Trata mudanças na tabela de memória
-  function onMemoryTableChange(column: string, address: number, value: string) {
+  function onMemoryTableChange(column: string, address: string, value: string) {
+    // Valida input
+    // if (!validateInput(column, value)) {
+    //   return;
+    // }
+
     // Testa se é endereço
     let isAddress = false;
     if (
-      memoryTable[address - 1]?.mnemonic != "endereço" &&
-      isa.findByOpcode(memory[address - 1])?.requiresAddress
+      !memoryTable[parseInt(address, 16) - 1]?.isAddress &&
+      isa.findByOpcode(memory[parseInt(address, 16) - 1])?.requiresAddress
     ) {
       isAddress = true;
+    }
+
+    // Valida input
+    switch (column) {
+      case "binary":
+        if (!/^[01]/.test(value)) return;
+        else if (!isAddress && parseInt(value, 2) > 15) return;
+        else if (isAddress && parseInt(value, 2) > 255) return;
+        break;
+      case "hexa":
+        if (!/^[0-9A-Fa-f]/.test(value)) return;
+        else if (!isAddress && parseInt(value, 16) > 15) return;
+        else if (isAddress && parseInt(value, 16) > 255) return;
+        break;
+      case "mnemonic":
+        if (!/^[a-zA-Z]/.test(value)) return;
+        break;
     }
 
     // Valida mnemônico
@@ -66,12 +100,17 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
     }
 
     let newLine;
-    // Se é endereço pega valor anterior exceto se estiver editando esse campo
     if (isAddress) {
       newLine = {
         address: address,
-        binary: column === "binary" ? value : memoryTable[address].binary,
-        hexa: column === "hexa" ? value : memoryTable[address].hexa,
+        binary:
+          column === "binary"
+            ? parseInt(value, 2).toString(2).padStart(8, "0")
+            : parseInt(value, 16).toString(2).padStart(8, "0"),
+        hexa:
+          column === "hexa"
+            ? parseInt(value, 16).toString(16).padStart(2, "0").toUpperCase()
+            : parseInt(value, 2).toString(16).padStart(2, "0").toUpperCase(),
         valid: true,
         isAddress: true,
       };
@@ -97,9 +136,16 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
     else {
       newLine = {
         address: address,
-        binary: column === "binary" ? value : memoryTable[address].binary,
-        hexa: column === "hexa" ? value : memoryTable[address].hexa,
-        mnemonic: column === "mnemonic" ? value : memoryTable[address].mnemonic,
+        binary:
+          column === "binary"
+            ? value
+            : memoryTable[parseInt(address, 16)].binary,
+        hexa:
+          column === "hexa" ? value : memoryTable[parseInt(address, 16)].hexa,
+        mnemonic:
+          column === "mnemonic"
+            ? value
+            : memoryTable[parseInt(address, 16)].mnemonic,
         valid: false,
         isAddress: false,
       };
@@ -118,7 +164,7 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
         nextIsAddress = false;
       } else if (
         newMemoryTable[i].mnemonic != undefined &&
-        isa.findByMnemonic(newMemoryTable[i].mnemonic ?? "")?.requiresAddress
+        isa.findByMnemonic(newMemoryTable[i].mnemonic!)?.requiresAddress
       ) {
         nextIsAddress = true;
         newMemoryTable[i].isAddress = false;
@@ -126,7 +172,6 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
         newMemoryTable[i].isAddress = false;
       }
     }
-    console.log("aaa");
 
     setMemoryTable(newMemoryTable);
 
@@ -138,7 +183,7 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    address: number,
+    address: string,
     field: keyof MemoryTableRow
   ) => {
     onMemoryTableChange(field, address, e.target.value);
@@ -158,7 +203,7 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
     <table>
       <thead>
         <tr>
-          <th>Endereço</th>
+          <th className={styles.address}>Endereço</th>
           <th>Binário</th>
           <th>Hexadecimal</th>
           <th>Mnemônico</th>
@@ -166,23 +211,8 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
       </thead>
       <tbody>
         {memoryTable.map((row, idx) => (
-          <tr
-            className={!row.valid ? styles.invalid : undefined}
-            key={row.address}
-          >
-            <td onClick={() => handleCellClick(idx, "address")}>
-              {editIdx === idx && editField === "address" ? (
-                <input
-                  type="text"
-                  value={row.address}
-                  onChange={(e) => handleChange(e, row.address, "address")}
-                  onBlur={handleBlur}
-                  autoFocus
-                />
-              ) : (
-                row.address
-              )}
-            </td>
+          <tr key={row.address}>
+            <td className={styles.addresshexa}>{row.address}</td>
             <td onClick={() => handleCellClick(idx, "binary")}>
               {editIdx === idx && editField === "binary" ? (
                 <input
@@ -209,7 +239,10 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
                 row.hexa
               )}
             </td>
-            <td onClick={() => handleCellClick(idx, "mnemonic")}>
+            <td
+              className={row.isAddress ? styles.addressrow : ""}
+              onClick={() => handleCellClick(idx, "mnemonic")}
+            >
               {row.isAddress ? (
                 "endereço"
               ) : editIdx === idx && editField === "mnemonic" ? (
@@ -218,6 +251,7 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
                   value={row.mnemonic}
                   onChange={(e) => handleChange(e, row.address, "mnemonic")}
                   onBlur={handleBlur}
+                  maxLength={3}
                   autoFocus
                 />
               ) : (
