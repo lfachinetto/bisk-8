@@ -1,7 +1,8 @@
 import InstructionSet from "../../models/instructionSet";
 import CodeSegmentTable from "../layout/CodeSegmentTable";
 import DataSegmentTable from "../layout/DataSegmentTable";
-import "./Memory.module.css";
+import styles from "./Memory.module.css";
+import React from "react";
 
 interface MemoryProps {
   memory: number[];
@@ -22,21 +23,27 @@ function Memory({ memory, setMemory, isa }: MemoryProps) {
 
   return (
     <div>
-      <br />
-      <h1>Memória</h1>
-      <br />
-      <h2>Segmento de Código</h2>
-      <CodeSegmentTable
-        memory={memory.slice(0, 128)}
-        setMemory={setCodeSegmentMemory}
-        isa={isa}
-      />
-      <h2>Segmento de Dados</h2>
-      <DataSegmentTable
-        memory={memory.slice(128, 256)}
-        setMemory={setDataSegmentMemory}
-        isa={isa}
-      />
+      <div className={styles.container}>
+        <h2>Segmento de Código</h2>
+        <br />
+        <div className={styles.tableContainer}>
+          <CodeSegmentTable
+            memory={memory.slice(0, 128)}
+            setMemory={setCodeSegmentMemory}
+            isa={isa}
+          />
+        </div>
+        <br />
+        <h2>Segmento de Dados</h2>
+        <br />
+        <div className={styles.tableContainer}>
+          <DataSegmentTable
+            memory={memory.slice(128, 256)}
+            setMemory={setDataSegmentMemory}
+            isa={isa}
+          />
+        </div>
+      </div>
     </div>
   );
 }

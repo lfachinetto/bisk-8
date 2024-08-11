@@ -26,7 +26,7 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
       address: index.toString(16).toUpperCase().padStart(2, "0"),
       binary: value.toString(2).padStart(8, "0"),
       hexa: value.toString(16).padStart(2, "0").toUpperCase(),
-      mnemonic: isa.findByOpcode(value)?.mnemonic,
+      mnemonic: isa.instructions[value]?.mnemonic,
       valid: true,
       isAddress: false,
     };
@@ -34,30 +34,13 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
   const [memoryTable, setMemoryTable] =
     useState<MemoryTableRow[]>(initialTable);
 
-  // Validate input
-  function validateInput(column: string, value: string) {
-    switch (column) {
-      case "binary":
-        return /^[01]/.test(value);
-      case "hexa":
-        return /^[0-9A-Fa-f]/.test(value);
-      case "mnemonic":
-        return /^[a-zA-Z]/.test(value);
-    }
-  }
-
   // Trata mudanças na tabela de memória
   function onMemoryTableChange(column: string, address: string, value: string) {
-    // Valida input
-    // if (!validateInput(column, value)) {
-    //   return;
-    // }
-
     // Testa se é endereço
     let isAddress = false;
     if (
       !memoryTable[parseInt(address, 16) - 1]?.isAddress &&
-      isa.findByOpcode(memory[parseInt(address, 16) - 1])?.requiresAddress
+      isa.instructions[memory[parseInt(address, 16) - 1]]?.requiresAddress
     ) {
       isAddress = true;
     }
@@ -83,13 +66,13 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
     let mnmemonic = null;
     switch (column) {
       case "binary":
-        if (isa.findByOpcode(parseInt(value, 2)) !== undefined) {
-          mnmemonic = isa.findByOpcode(parseInt(value, 2))!.mnemonic;
+        if (isa.instructions[parseInt(value, 2)] !== undefined) {
+          mnmemonic = isa.instructions[parseInt(value, 2)]!.mnemonic;
         }
         break;
       case "hexa":
-        if (isa.findByOpcode(parseInt(value, 16)) !== undefined) {
-          mnmemonic = isa.findByOpcode(parseInt(value, 16))!.mnemonic;
+        if (isa.instructions[parseInt(value, 16)] !== undefined) {
+          mnmemonic = isa.instructions[parseInt(value, 16)]!.mnemonic;
         }
         break;
       case "mnemonic":
@@ -167,8 +150,21 @@ function CodeSegmentTable({ memory, setMemory, isa }: CodeSegmentTableProps) {
         isa.findByMnemonic(newMemoryTable[i].mnemonic!)?.requiresAddress
       ) {
         nextIsAddress = true;
+
+        // Se era endereço e não é mais, atualiza mnemônico
+        if (newMemoryTable[i].isAddress)
+          newMemoryTable[i].mnemonic =
+            isa.instructions[parseInt(newMemoryTable[i].binary, 2)]?.mnemonic ??
+            "???";
+
         newMemoryTable[i].isAddress = false;
       } else {
+        // Se era endereço e não é mais, atualiza mnemônico
+        if (newMemoryTable[i].isAddress)
+          newMemoryTable[i].mnemonic =
+            isa.instructions[parseInt(newMemoryTable[i].binary, 2)]?.mnemonic ??
+            "???";
+
         newMemoryTable[i].isAddress = false;
       }
     }

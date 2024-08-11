@@ -1,11 +1,11 @@
-import RegisterBank from "./registerBank";
+import RegisterFile from "./registerFile";
 
 class Instruction {
   opcode: number;
   mnemonic: string;
   requiresAddress: boolean;
   operation?: (
-    registers: RegisterBank,
+    registers: RegisterFile,
     memory: number[],
     step?: number
   ) => string[];
@@ -15,7 +15,7 @@ class Instruction {
     mnemonic: string,
     requiresAddress: boolean,
     operation?: (
-      registers: RegisterBank,
+      registers: RegisterFile,
       memory: number[],
       step?: number
     ) => string[]

@@ -1,7 +1,7 @@
-import RegisterBank from "../models/registerBank";
+import RegisterFile from "../models/registerFile";
 
 export function searchInstruction(
-  registers: RegisterBank,
+  file: RegisterFile,
   memory: number[],
   step?: number
 ): string[] {
@@ -13,23 +13,23 @@ export function searchInstruction(
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
-    registers.findByName("MAR")!.value = registers.findByName("PC")!.value;
+    file.registers["MAR"].value = file.registers["PC"].value;
     rtl.push("MAR <- PC");
   }
 
   if (step == 1 || step == null) {
-    registers.findByName("MDR")!.value =
-      memory[registers.findByName("MAR")!.value];
+    file.registers["MDR"].value =
+      memory[file.registers["MAR"].value];
     rtl.push("MDR <- MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
-    registers.findByName("PC")!.value += 1;
+    file.registers["PC"].value += 1;
     rtl.push("PC <- PC + 1");
   }
 
   if (step == 3 || step == null) {
-    registers.findByName("IR")!.value = registers.findByName("MDR")!.value;
+    file.registers["IR"].value = file.registers["MDR"].value;
     rtl.push("IR <- MDR");
   }
 
@@ -37,7 +37,7 @@ export function searchInstruction(
 }
 
 export function searchAddress(
-  registers: RegisterBank,
+  file: RegisterFile,
   memory: number[],
   step?: number
 ): string[] {
@@ -47,18 +47,18 @@ export function searchAddress(
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
-    registers.findByName("MAR")!.value = registers.findByName("PC")!.value;
+    file.registers["MAR"].value = file.registers["PC"].value;
     rtl.push("MAR <- PC");
   }
 
   if (step == 1 || step == null) {
-    registers.findByName("MDR")!.value =
-      memory[registers.findByName("MAR")!.value];
+   file.registers["MDR"].value =
+      memory[file.registers["MAR"].value];
     rtl.push("MDR <- MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
-    registers.findByName("PC")!.value += 1;
+    file.registers["PC"].value += 1;
     rtl.push("PC <- PC + 1");
   }
 
@@ -66,7 +66,7 @@ export function searchAddress(
 }
 
 export function add(
-  registers: RegisterBank,
+  file: RegisterFile,
   memory: number[],
   step?: number
 ): string[] {
@@ -76,21 +76,21 @@ export function add(
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
-    registers.findByName("MAR")!.value = registers.findByName("MDR")!.value;
+    file.registers["MAR"].value = file.registers["MDR"].value;
     rtl.push("MAR <- MDR");
   }
 
   if (step == 1 || step == null) {
-    registers.findByName("MDR")!.value =
-      memory[registers.findByName("MAR")!.value];
+    file.registers["MDR"].value =
+      memory[file.registers["MAR"].value];
     rtl.push("MDR <- MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
-    console.log(registers.findByName("ACC")!.value);
-    registers.findByName("ACC")!.value += registers.findByName("MDR")!.value;
+    console.log(file.registers["ACC"].value);
+    file.registers["ACC"].value += file.registers["MDR"].value;
 
-    console.log(registers.findByName("ACC")!.value);
+    console.log(file.registers["ACC"]!.value);
     rtl.push("ACC <- ACC + MDR");
   }
 

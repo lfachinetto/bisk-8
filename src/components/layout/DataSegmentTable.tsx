@@ -14,7 +14,7 @@ interface DataSegmentTableProps {
   isa: InstructionSet;
 }
 
-function DataSegmentTable({ memory, setMemory, isa }: DataSegmentTableProps) {
+function DataSegmentTable({ memory, setMemory }: DataSegmentTableProps) {
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [editField, setEditField] = useState<keyof DataTableRow | null>(null);
 
