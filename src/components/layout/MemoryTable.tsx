@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import InstructionSet from "../../models/instructionSet";
-import styles from "./DataSegmentTable.module.css";
+import styles from "./MemoryTable.module.css";
 
 interface DataTableRow {
   address: string;
@@ -8,19 +8,16 @@ interface DataTableRow {
   hexa: string;
 }
 
-interface DataSegmentTableProps {
+interface MemoryTableProps {
   memory: number[];
   setMemory: (memory: number[]) => void;
   isa: InstructionSet;
 }
 
-function DataSegmentTable({ memory, setMemory }: DataSegmentTableProps) {
-  const [editIdx, setEditIdx] = useState<number | null>(null);
-  const [editField, setEditField] = useState<keyof DataTableRow | null>(null);
-
+function MemoryTable({ memory, setMemory }: MemoryTableProps) {
   const initialTable = memory.map((value, index) => {
     return {
-      address: (index + 128).toString(16).padStart(2, "0").toUpperCase(),
+      address: index.toString(16).padStart(2, "0").toUpperCase(),
       binary: value.toString(2).padStart(8, "0"),
       hexa: value.toString(16).padStart(2, "0").toUpperCase(),
     };
@@ -71,16 +68,6 @@ function DataSegmentTable({ memory, setMemory }: DataSegmentTableProps) {
     onDataTableChange(field, address, e.target.value);
   };
 
-  const handleCellClick = (idx: number, field: keyof DataTableRow) => {
-    setEditIdx(idx);
-    setEditField(field);
-  };
-
-  const handleBlur = () => {
-    setEditIdx(null);
-    setEditField(null);
-  };
-
   return (
     <table>
       <thead>
@@ -91,34 +78,22 @@ function DataSegmentTable({ memory, setMemory }: DataSegmentTableProps) {
         </tr>
       </thead>
       <tbody>
-        {memoryTable.map((row, idx) => (
+        {memoryTable.map((row) => (
           <tr key={row.address}>
             <td className={styles.addresshexa}>{row.address}</td>
-            <td onClick={() => handleCellClick(idx, "binary")}>
-              {editIdx === idx && editField === "binary" ? (
-                <input
-                  type="text"
-                  value={row.binary}
-                  onChange={(e) => handleChange(e, row.address, "binary")}
-                  onBlur={handleBlur}
-                  autoFocus
-                />
-              ) : (
-                row.binary
-              )}
+            <td>
+              <input
+                type="text"
+                value={row.binary}
+                onChange={(e) => handleChange(e, row.address, "binary")}
+              />
             </td>
-            <td onClick={() => handleCellClick(idx, "hexa")}>
-              {editIdx === idx && editField === "hexa" ? (
-                <input
-                  type="text"
-                  value={row.hexa}
-                  onChange={(e) => handleChange(e, row.address, "hexa")}
-                  onBlur={handleBlur}
-                  autoFocus
-                />
-              ) : (
-                row.hexa
-              )}
+            <td>
+              <input
+                type="text"
+                value={row.hexa}
+                onChange={(e) => handleChange(e, row.address, "hexa")}
+              />
             </td>
           </tr>
         ))}
@@ -127,4 +102,4 @@ function DataSegmentTable({ memory, setMemory }: DataSegmentTableProps) {
   );
 }
 
-export default DataSegmentTable;
+export default MemoryTable;

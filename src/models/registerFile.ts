@@ -11,7 +11,7 @@ class RegisterFile {
       "IR": new Register("IR", 8, 0b0),
       "ACC": new Register("ACC", 8, 0b0),
       "PSR": new Register("PSR", 2, 0b0),
-      "HALT": new Register("HALT", 1, 0b0),
+      "HLT": new Register("HLT", 1, 0b0),
     };
   }
 

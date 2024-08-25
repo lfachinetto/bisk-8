@@ -1,14 +1,17 @@
-h1,h2 {
-    text-align: center;
+h1,
+h2 {
+  text-align: center;
 }
 
 .tableContainer {
-    flex: 1;
-    overflow: auto;
+  flex: 1;
+  height: 90vh;
+  width: 550px;
+  overflow: auto;
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    height: 90vh;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
 }
