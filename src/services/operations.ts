@@ -6,31 +6,31 @@ export function searchInstruction(
   memory: number[],
   step?: number
 ): string[] {
-  // 0	MAR <- PC
-  // 1	MDR <- MEM[MAR]
-  // 2	PC <- PC + 1
-  // 3	IR <- MDR
+  // 0	MAR ← PC
+  // 1	MDR ← MEM[MAR]
+  // 2	PC ← PC + 1
+  // 3	IR ← MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["PC"].value;
-    rtl.push("MAR <- PC");
+    rtl.push("MAR ← PC");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["PC"].value += 1;
-    rtl.push("PC <- PC + 1");
+    rtl.push("PC ← PC + 1");
   }
 
   if (step == 3 || step == null) {
     file.registers["IR"].value = file.registers["MDR"].value;
-    rtl.push("IR <- MDR");
+    rtl.push("IR ← MDR");
   }
 
   return rtl;
@@ -42,24 +42,24 @@ export function searchAddress(
   memory: number[],
   step?: number
 ): string[] {
-  // 4	MAR <- PC
-  // 5	MDR <- MEM[MAR]
-  // 6	PC <- PC + 1
+  // 4	MAR ← PC
+  // 5	MDR ← MEM[MAR]
+  // 6	PC ← PC + 1
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["PC"].value;
-    rtl.push("MAR <- PC");
+    rtl.push("MAR ← PC");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["PC"].value += 1;
-    rtl.push("PC <- PC + 1");
+    rtl.push("PC ← PC + 1");
   }
 
   return rtl;
@@ -74,9 +74,8 @@ export function nop(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _step?: number
 ): string[] {
-
   const rtl: string[] = [];
-  
+
   return rtl;
 }
 
@@ -86,25 +85,25 @@ export function lda(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- MEM[MAR]
-  // 9	ACC  <- MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← MEM[MAR]
+  // 9	ACC  ← MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["ACC"].value = file.registers["MDR"].value;
-    rtl.push("ACC <- MDR");
+    rtl.push("ACC ← MDR");
   }
 
   return rtl;
@@ -116,25 +115,25 @@ export function sta(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- ACC
-  // 9	MEM[MAR] <- MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← ACC
+  // 9	MEM[MAR] ← MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = file.registers["ACC"].value;
-    rtl.push("MDR <- ACC");
+    rtl.push("MDR ← ACC");
   }
 
   if (step == 2 || step == null) {
     memory[file.registers["MAR"].value] = file.registers["MDR"].value;
-    rtl.push("MEM[MAR] <- MDR");
+    rtl.push("MEM[MAR] ← MDR");
   }
 
   return rtl;
@@ -146,26 +145,26 @@ export function add(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- MEM[MAR]
-  // 9	ACC <- ACC + MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← MEM[MAR]
+  // 9	ACC ← ACC + MDR
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     console.log(file.registers["ACC"].value);
     file.registers["ACC"].value += file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC <- ACC + MDR");
+    rtl.push("ACC ← ACC + MDR");
   }
 
   return rtl;
@@ -177,25 +176,25 @@ export function sub(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- MEM[MAR]
-  // 9	ACC <- ACC - MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← MEM[MAR]
+  // 9	ACC ← ACC - MDR
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["ACC"].value -= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC <- ACC - MDR");
+    rtl.push("ACC ← ACC - MDR");
   }
 
   return rtl;
@@ -207,26 +206,26 @@ export function mul(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- MEM[MAR]
-  // 9	ACC <- ACC * MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← MEM[MAR]
+  // 9	ACC ← ACC * MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["ACC"].value *= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC <- ACC * MDR");
+    rtl.push("ACC ← ACC * MDR");
   }
 
   return rtl;
@@ -238,25 +237,25 @@ export function div(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- MEM[MAR]
-  // 9	ACC <- ACC / MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← MEM[MAR]
+  // 9	ACC ← ACC / MDR
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["ACC"].value /= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC <- ACC / MDR");
+    rtl.push("ACC ← ACC / MDR");
   }
 
   return rtl;
@@ -268,13 +267,13 @@ export function not(
   _memory: number[],
   step?: number
 ): string[] {
-  // 4 ACC <- !ACC
+  // 4 ACC ← !ACC
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["ACC"].value = ~file.registers["ACC"].value;
     testFlags(file);
-    rtl.push("ACC <- !ACC");
+    rtl.push("ACC ← !ACC");
   }
 
   return rtl;
@@ -286,26 +285,26 @@ export function and(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- MEM[MAR]
-  // 9	ACC <- ACC & MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← MEM[MAR]
+  // 9	ACC ← ACC & MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["ACC"].value &= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC <- ACC & MDR");
+    rtl.push("ACC ← ACC & MDR");
   }
 
   return rtl;
@@ -317,26 +316,26 @@ export function or(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- MEM[MAR]
-  // 9	ACC <- ACC | MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← MEM[MAR]
+  // 9	ACC ← ACC | MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["ACC"].value |= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC <- ACC | MDR");
+    rtl.push("ACC ← ACC | MDR");
   }
 
   return rtl;
@@ -348,26 +347,26 @@ export function xor(
   memory: number[],
   step?: number
 ): string[] {
-  // 7	MAR <- MDR
-  // 8	MDR <- MEM[MAR]
-  // 9	ACC <- ACC ^ MDR
+  // 7	MAR ← MDR
+  // 8	MDR ← MEM[MAR]
+  // 9	ACC ← ACC ^ MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR <- MDR");
+    rtl.push("MAR ← MDR");
   }
 
   if (step == 1 || step == null) {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR <- MEM[MAR]");
+    rtl.push("MDR ← MEM[MAR]");
   }
 
   if (step == 2 || step == null) {
     file.registers["ACC"].value ^= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC <- ACC ^ MDR");
+    rtl.push("ACC ← ACC ^ MDR");
   }
 
   return rtl;
@@ -379,13 +378,13 @@ export function jmp(
   _memory: number[],
   step?: number
 ): string[] {
-  // 7	PC <- MDR
+  // 7	PC ← MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     file.registers["PC"].value = file.registers["MDR"].value;
-    rtl.push("PC <- MDR");
+    rtl.push("PC ← MDR");
   }
 
   return rtl;
@@ -397,14 +396,14 @@ export function jzf(
   _memory: number[],
   step?: number
 ): string[] {
-  // 7	Se (ZF==1) PC <- MDR
+  // 7	Se (ZF==1) PC ← MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     if (file.registers["PSR"].value & 0b01) {
       file.registers["PC"].value = file.registers["MDR"].value;
-      rtl.push("Se (ZF==1) PC <- MDR");
+      rtl.push("Se (ZF==1) PC ← MDR");
     }
   }
 
@@ -417,14 +416,14 @@ export function jsf(
   _memory: number[],
   step?: number
 ): string[] {
-  // 7	Se (SF==1) PC <- MDR
+  // 7	Se (SF==1) PC ← MDR
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     if (file.registers["PSR"].value & 0b10) {
       file.registers["PC"].value = file.registers["MDR"].value;
-      rtl.push("Se (SF==1) PC <- MDR");
+      rtl.push("Se (SF==1) PC ← MDR");
     }
   }
 
@@ -437,13 +436,13 @@ export function tst(
   _memory: number[],
   step?: number
 ): string[] {
-  // 7	_ <- AC
+  // 7	_ ← AC
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
     testFlags(file);
-    rtl.push("_ <- AC");
+    rtl.push("_ ← AC");
   }
 
   return rtl;
@@ -451,16 +450,17 @@ export function tst(
 
 // Instrução HLT
 export function hlt(
-  _file: RegisterFile,
+  file: RegisterFile,
   _memory: number[],
   step?: number
 ): string[] {
-  // 7	HLT <- 1
+  // 7	HLT ← 1
 
   const rtl: string[] = [];
 
   if (step == 0 || step == null) {
-    rtl.push("HLT <- 1");
+    file.registers["HLT"].value = 1;
+    rtl.push("HLT ← 1");
   }
 
   return rtl;

@@ -1,5 +1,5 @@
 import InstructionSet from "../../models/instructionSet";
-import DataSegmentTable from "../layout/MemoryTable";
+import MemoryTable from "../layout/MemoryTable";
 import styles from "./Memory.module.css";
 import React from "react";
 
@@ -16,7 +16,7 @@ function Memory({ memory, setMemory, isa }: MemoryProps) {
       <div className={styles.container}>
         <center>
           <div className={styles.tableContainer}>
-            <DataSegmentTable
+            <MemoryTable
               memory={memory}
               setMemory={setMemory}
               isa={isa}

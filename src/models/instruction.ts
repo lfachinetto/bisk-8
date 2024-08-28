@@ -9,21 +9,24 @@ class Instruction {
     memory: number[],
     step?: number
   ) => string[];
+  steps: number;
 
   constructor(
     opcode: number,
     mnemonic: string,
     requiresAddress: boolean,
-    operation?: (
+    operation: (
       registers: RegisterFile,
       memory: number[],
       step?: number
-    ) => string[]
+    ) => string[],
+    steps: number
   ) {
     this.opcode = opcode;
     this.mnemonic = mnemonic;
     this.requiresAddress = requiresAddress;
     this.operation = operation;
+    this.steps = steps;
   }
 
   getHexaOpcode(): string {

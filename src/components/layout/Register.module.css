@@ -1,0 +1,32 @@
+.table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;  /* Center vertically */
+  }
+  
+  .custom-table {
+    border-collapse: collapse;
+    width: auto;
+    border: 2px solid black;
+  }
+  
+  .custom-table td {
+    border: 1px solid black;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .label-cell {
+    width: 50%;
+    font-weight: bold;
+  }
+  
+  .value-cell {
+    width: 50%;
+  }
+  
+  .large-cell {
+    width: 100%;
+    font-weight: bold;
+  }
