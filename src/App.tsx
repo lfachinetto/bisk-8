@@ -23,27 +23,29 @@ function App() {
 
   function runAll() {
     const newRegisters = new RegisterFile();
-    const newMemory = [...memory];      
-    let newRtl: string[] = [];
+    const newMemory = [...memory];
+    const newRtl: string[] = [];
 
     while (newRegisters.registers["PC"].value < 256) {
       // Realiza etapas de busca de instrução
-      newRtl = newRtl.concat(searchInstruction(newRegisters, newMemory));
-
-      // Realiza etapas de busca de endereço (instruções de 2 bytes)
-      if (
-        newRegisters.registers["IR"].value != 0b0 &&
-        newRegisters.registers["IR"].value != 0b0111 &&
-        newRegisters.registers["IR"].value != 0b1110 &&
-        newRegisters.registers["IR"].value != 0b1111
-      ) {
-        newRtl = newRtl.concat(searchAddress(newRegisters, newMemory));
-      }
+      searchInstruction.forEach((cicle) => {
+        newRtl.push(cicle(newRegisters, newMemory));
+      });
 
       const instruction = isa.instructions[newRegisters.registers["IR"].value];
-
+      
       if (instruction) {
-        newRtl = newRtl.concat(instruction.operation!(newRegisters, newMemory));
+        // Realiza etapas de busca de endereço (instruções de 2 bytes)
+        if (instruction.requiresAddress) {
+          searchAddress.forEach((cicle) => {
+            newRtl.push(cicle(newRegisters, newMemory));
+          });
+        }
+        
+        // Executa operação da instrução
+        instruction.operation.forEach((cicle) => {
+          newRtl.push(cicle(newRegisters, newMemory));
+        });
       } else
         throw new Error(
           `Opcode ${newMemory[newRegisters.registers["PC"].value].toString(2).padStart(8, "0")} not found`
@@ -57,7 +59,7 @@ function App() {
     // Atualiza estado para refletir na interface
     setRegisters(newRegisters);
     setMemory(newMemory);
-    // setRtl([...rtl, ...newRtl]);
+    setRtl([...rtl, ...newRtl]);
   }
 
   return (

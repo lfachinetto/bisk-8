@@ -4,29 +4,18 @@ class Instruction {
   opcode: number;
   mnemonic: string;
   requiresAddress: boolean;
-  operation?: (
-    registers: RegisterFile,
-    memory: number[],
-    step?: number
-  ) => string[];
-  steps: number;
+  operation: ((file: RegisterFile, memory: number[]) => string)[];
 
   constructor(
     opcode: number,
     mnemonic: string,
     requiresAddress: boolean,
-    operation: (
-      registers: RegisterFile,
-      memory: number[],
-      step?: number
-    ) => string[],
-    steps: number
+    operation: ((file: RegisterFile, memory: number[]) => string)[],
   ) {
     this.opcode = opcode;
     this.mnemonic = mnemonic;
     this.requiresAddress = requiresAddress;
     this.operation = operation;
-    this.steps = steps;
   }
 
   getHexaOpcode(): string {

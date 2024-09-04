@@ -1,470 +1,293 @@
 import RegisterFile from "../models/registerFile";
 
 // Busca instrução (ciclo 0 a 3)
-export function searchInstruction(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 0	MAR ← PC
-  // 1	MDR ← MEM[MAR]
-  // 2	PC ← PC + 1
-  // 3	IR ← MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 0 MAR ← PC
+// 1 MDR ← MEM[MAR]
+// 2 PC ← PC + 1
+// 3 IR ← MDR
+export const searchInstruction = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["PC"].value;
-    rtl.push("MAR ← PC");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← PC";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["PC"].value += 1;
-    rtl.push("PC ← PC + 1");
-  }
-
-  if (step == 3 || step == null) {
+    return "PC ← PC + 1";
+  },
+  (file: RegisterFile): string => {
     file.registers["IR"].value = file.registers["MDR"].value;
-    rtl.push("IR ← MDR");
-  }
-
-  return rtl;
-}
+    return "IR ← MDR";
+  },
+];
 
 // Busca endereço (ciclo 4 a 6, intruções com endereço)
-export function searchAddress(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 4	MAR ← PC
-  // 5	MDR ← MEM[MAR]
-  // 6	PC ← PC + 1
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 4 MAR ← PC
+// 5 MDR ← MEM[MAR]
+// 6 PC ← PC + 1
+export const searchAddress = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["PC"].value;
-    rtl.push("MAR ← PC");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← PC";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["PC"].value += 1;
-    rtl.push("PC ← PC + 1");
-  }
-
-  return rtl;
-}
+    return "PC ← PC + 1";
+  },
+];
 
 // Instrução NOP
-export function nop(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _file: RegisterFile,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _memory: number[],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _step?: number
-): string[] {
-  const rtl: string[] = [];
-
-  return rtl;
-}
+export const nop = [
+  (): string => {
+    return "";
+  },
+];
 
 // Instrução LDA
-export function lda(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← MEM[MAR]
-  // 9	ACC  ← MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← MEM[MAR]
+// 9 ACC  ← MDR
+export const lda = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["ACC"].value = file.registers["MDR"].value;
-    rtl.push("ACC ← MDR");
-  }
-
-  return rtl;
-}
+    return "ACC ← MDR";
+  },
+];
 
 // Instrução STA
-export function sta(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← ACC
-  // 9	MEM[MAR] ← MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← ACC
+// 9 MEM[MAR] ← MDR
+export const sta = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile): string => {
     file.registers["MDR"].value = file.registers["ACC"].value;
-    rtl.push("MDR ← ACC");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← ACC";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     memory[file.registers["MAR"].value] = file.registers["MDR"].value;
-    rtl.push("MEM[MAR] ← MDR");
-  }
-
-  return rtl;
-}
+    return "MEM[MAR] ← MDR";
+  },
+];
 
 // Instrução ADD
-export function add(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← MEM[MAR]
-  // 9	ACC ← ACC + MDR
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← MEM[MAR]
+// 9 ACC ← ACC + MDR
+export const add = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
-    console.log(file.registers["ACC"].value);
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["ACC"].value += file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC ← ACC + MDR");
-  }
-
-  return rtl;
-}
+    return "ACC ← ACC + MDR";
+  },
+];
 
 // Instrução SUB
-export function sub(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← MEM[MAR]
-  // 9	ACC ← ACC - MDR
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← MEM[MAR]
+// 9 ACC ← ACC - MDR
+export const sub = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["ACC"].value -= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC ← ACC - MDR");
-  }
-
-  return rtl;
-}
+    return "ACC ← ACC - MDR";
+  },
+];
 
 // Instrução MUL
-export function mul(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← MEM[MAR]
-  // 9	ACC ← ACC * MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← MEM[MAR]
+// 9 ACC ← ACC * MDR
+export const mul = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["ACC"].value *= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC ← ACC * MDR");
-  }
-
-  return rtl;
-}
+    return "ACC ← ACC * MDR";
+  },
+];
 
 // Instrução DIV
-export function div(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← MEM[MAR]
-  // 9	ACC ← ACC / MDR
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← MEM[MAR]
+// 9 ACC ← ACC / MDR
+export const div = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["ACC"].value /= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC ← ACC / MDR");
-  }
-
-  return rtl;
-}
+    return "ACC ← ACC / MDR";
+  },
+];
 
 // Instrução NOT
-export function not(
-  file: RegisterFile,
-  _memory: number[],
-  step?: number
-): string[] {
-  // 4 ACC ← !ACC
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 4 ACC ← !ACC
+export const not = [
+  (file: RegisterFile): string => {
     file.registers["ACC"].value = ~file.registers["ACC"].value;
     testFlags(file);
-    rtl.push("ACC ← !ACC");
-  }
-
-  return rtl;
-}
+    return "ACC ← !ACC";
+  },
+];
 
 // Instrução AND
-export function and(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← MEM[MAR]
-  // 9	ACC ← ACC & MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← MEM[MAR]
+// 9 ACC ← ACC & MDR
+export const and = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["ACC"].value &= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC ← ACC & MDR");
-  }
-
-  return rtl;
-}
+    return "ACC ← ACC & MDR";
+  },
+];
 
 // Instrução OR
-export function or(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← MEM[MAR]
-  // 9	ACC ← ACC | MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← MEM[MAR]
+// 9 ACC ← ACC | MDR
+export const or = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["ACC"].value |= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC ← ACC | MDR");
-  }
-
-  return rtl;
-}
+    return "ACC ← ACC | MDR";
+  },
+];
 
 // Instrução XOR
-export function xor(
-  file: RegisterFile,
-  memory: number[],
-  step?: number
-): string[] {
-  // 7	MAR ← MDR
-  // 8	MDR ← MEM[MAR]
-  // 9	ACC ← ACC ^ MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 MAR ← MDR
+// 8 MDR ← MEM[MAR]
+// 9 ACC ← ACC ^ MDR
+export const xor = [
+  (file: RegisterFile): string => {
     file.registers["MAR"].value = file.registers["MDR"].value;
-    rtl.push("MAR ← MDR");
-  }
-
-  if (step == 1 || step == null) {
+    return "MAR ← MDR";
+  },
+  (file: RegisterFile, memory: number[]): string => {
     file.registers["MDR"].value = memory[file.registers["MAR"].value];
-    rtl.push("MDR ← MEM[MAR]");
-  }
-
-  if (step == 2 || step == null) {
+    return "MDR ← MEM[MAR]";
+  },
+  (file: RegisterFile): string => {
     file.registers["ACC"].value ^= file.registers["MDR"].value;
     testFlags(file);
-    rtl.push("ACC ← ACC ^ MDR");
-  }
-
-  return rtl;
-}
+    return "ACC ← ACC ^ MDR";
+  },
+];
 
 // Instrução JMP
-export function jmp(
-  file: RegisterFile,
-  _memory: number[],
-  step?: number
-): string[] {
-  // 7	PC ← MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 PC ← MDR
+export const jmp = [
+  (file: RegisterFile): string => {
     file.registers["PC"].value = file.registers["MDR"].value;
-    rtl.push("PC ← MDR");
-  }
-
-  return rtl;
-}
+    return "PC ← MDR";
+  },
+];
 
 // Instrução JZF
-export function jzf(
-  file: RegisterFile,
-  _memory: number[],
-  step?: number
-): string[] {
-  // 7	Se (ZF==1) PC ← MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 Se (ZF==1) PC ← MDR
+export const jzf = [
+  (file: RegisterFile): string => {
     if (file.registers["PSR"].value & 0b01) {
       file.registers["PC"].value = file.registers["MDR"].value;
-      rtl.push("Se (ZF==1) PC ← MDR");
+      return "Se (ZF==1) PC ← MDR";
     }
-  }
-
-  return rtl;
-}
+    return "";
+  },
+];
 
 // Instrução JSF
-export function jsf(
-  file: RegisterFile,
-  _memory: number[],
-  step?: number
-): string[] {
-  // 7	Se (SF==1) PC ← MDR
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 Se (SF==1) PC ← MDR
+export const jsf = [
+  (file: RegisterFile): string => {
     if (file.registers["PSR"].value & 0b10) {
       file.registers["PC"].value = file.registers["MDR"].value;
-      rtl.push("Se (SF==1) PC ← MDR");
+      return "Se (SF==1) PC ← MDR";
     }
-  }
-
-  return rtl;
-}
+    return "";
+  },
+];
 
 // Instrução TST
-export function tst(
-  file: RegisterFile,
-  _memory: number[],
-  step?: number
-): string[] {
-  // 7	_ ← AC
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 _ ← AC
+export const tst = [
+  (file: RegisterFile): string => {
     testFlags(file);
-    rtl.push("_ ← AC");
-  }
-
-  return rtl;
-}
+    return "_ ← AC";
+  },
+];
 
 // Instrução HLT
-export function hlt(
-  file: RegisterFile,
-  _memory: number[],
-  step?: number
-): string[] {
-  // 7	HLT ← 1
-
-  const rtl: string[] = [];
-
-  if (step == 0 || step == null) {
+// 7 HLT ← 1
+export const hlt = [
+  (file: RegisterFile): string => {
     file.registers["HLT"].value = 1;
-    rtl.push("HLT ← 1");
-  }
-
-  return rtl;
-}
+    return "HLT ← 1";
+  },
+];
 
 // Realiza testes para atualizar flags
 // Origem: operações na ULA ou instrução TST
