@@ -1,0 +1,18 @@
+h1,
+h2 {
+  text-align: center;
+}
+
+.tableContainer {
+  flex: 1;
+  height: 90vh;
+  width: 550px;
+  overflow: auto;
+}
+
+.rtlContainer {
+  flex: 1;
+  height: 40vh;
+  width: 550px;
+  overflow: auto;
+}

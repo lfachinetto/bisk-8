@@ -8,18 +8,10 @@ import styles from "./App.module.css";
 import Simulation from "./components/pages/Simulation";
 
 function App() {
-  // const [count, setCount] = useState(0);
-
   const [registers, setRegisters] = useState<RegisterFile>(new RegisterFile());
   const [memory, setMemory] = useState<number[]>(new Array(256).fill(0));
   const [rtl, setRtl] = useState<string[]>([]);
   const isa = new InstructionSet();
-
-  // const registers = new RegisterFile();
-  // const isa = new InstructionSet();
-  // const memory = new Array(256).fill(0);
-
-  // isa.findByMnemonic("add")!.operation!(registers, memory);
 
   function runAll() {
     const newRegisters = new RegisterFile();
@@ -27,21 +19,24 @@ function App() {
     const newRtl: string[] = [];
 
     while (newRegisters.registers["PC"].value < 256) {
+      newRtl.push("#Ciclo de busca da instrução");
       // Realiza etapas de busca de instrução
       searchInstruction.forEach((cicle) => {
         newRtl.push(cicle(newRegisters, newMemory));
       });
 
       const instruction = isa.instructions[newRegisters.registers["IR"].value];
-      
+
       if (instruction) {
         // Realiza etapas de busca de endereço (instruções de 2 bytes)
         if (instruction.requiresAddress) {
+          newRtl.push("#Ciclo de busca do endereço");
           searchAddress.forEach((cicle) => {
             newRtl.push(cicle(newRegisters, newMemory));
           });
         }
-        
+
+        newRtl.push("#Ciclo de execução da instrução");
         // Executa operação da instrução
         instruction.operation.forEach((cicle) => {
           newRtl.push(cicle(newRegisters, newMemory));
@@ -59,7 +54,7 @@ function App() {
     // Atualiza estado para refletir na interface
     setRegisters(newRegisters);
     setMemory(newMemory);
-    setRtl([...rtl, ...newRtl]);
+    setRtl(newRtl);
   }
 
   return (

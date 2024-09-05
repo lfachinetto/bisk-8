@@ -46,7 +46,7 @@ export const searchAddress = [
 // Instrução NOP
 export const nop = [
   (): string => {
-    return "";
+    return "-";
   },
 ];
 

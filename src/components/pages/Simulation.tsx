@@ -1,9 +1,8 @@
-// import styles from "./Simulation.module.css";
-import React from "react";
-import Register from "../layout/Register";
 import RegisterFile from "../../models/registerFile";
 import InstructionSet from "../../models/instructionSet";
-import RTL from "../layout/RTL";
+import RegisterTable from "../layout/RegisterTable";
+import RTLTable from "../layout/RTLTable";
+import styles from "./Simulation.module.css";
 
 interface SimulationProps {
   registers: RegisterFile;
@@ -14,10 +13,13 @@ interface SimulationProps {
 function Simulation({ registers, isa, rtl }: SimulationProps) {
   return (
     <>
-      {Object.entries(registers.registers).map(([name, value]) => (
-        <Register key={name} name={name} value={value.value} isa={isa} />
-      ))}
-      <RTL strings={rtl} />
+      <RegisterTable file={registers} isa={isa} />
+      <br />
+      <center>
+        <div className={styles.rtlContainer}>
+          <RTLTable rtlLog={rtl} />
+        </div>
+      </center>
     </>
   );
 }
