@@ -5,7 +5,7 @@ h2 {
 
 .tableContainer {
   flex: 1;
-  height: 90vh;
+  height: 80vh;
   width: 550px;
   overflow: auto;
 }

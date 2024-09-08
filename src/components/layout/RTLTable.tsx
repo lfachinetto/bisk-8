@@ -20,13 +20,13 @@ function RegisterTable({ rtlLog }: RegisterTableProps) {
           return (
             <>
               {isComment && i > 0 ? (
-                <tr>
+                <tr key={Math.random()}>
                   <td />
                 </tr>
               ) : (
                 <></>
               )}
-              <tr key={rtl}>
+              <tr key={Math.random()}>
                 <td className={isComment ? styles.title : ""}>
                   {isComment ? rtl.slice(1) : rtl}
                 </td>

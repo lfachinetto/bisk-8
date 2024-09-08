@@ -1,71 +1,49 @@
-import React, { useState } from "react";
-import InstructionSet from "../../models/instructionSet";
+import RegisterFile from "../../models/registerFile";
 import styles from "./MemoryTable.module.css";
 
-interface DataTableRow {
-  address: string;
-  binary: string;
-  hexa: string;
+enum Column {
+  binary,
+  hexa,
 }
 
 interface MemoryTableProps {
   memory: number[];
   setMemory: (memory: number[]) => void;
-  isa: InstructionSet;
+  file: RegisterFile;
 }
 
-function MemoryTable({ memory, setMemory }: MemoryTableProps) {
-  const initialTable = memory.map((value, index) => {
-    return {
-      address: index.toString(16).padStart(2, "0").toUpperCase(),
-      binary: value.toString(2).padStart(8, "0"),
-      hexa: value.toString(16).padStart(2, "0").toUpperCase(),
-    };
-  });
-  const [memoryTable, setMemoryTable] = useState<DataTableRow[]>(initialTable);
-
+function MemoryTable({ memory, setMemory, file }: MemoryTableProps) {
   // Trata mudanças na tabela de memória
-  function onDataTableChange(column: string, address: string, value: string) {
+  function onDataTableChange(column: Column, address: number, value: string) {
     // Valida input
     switch (column) {
-      case "binary":
+      case Column.binary:
         if (!/^[01]/.test(value)) return;
         else if (parseInt(value, 2) > 255) return;
         break;
-      case "hexa":
+      case Column.hexa:
         if (!/^[0-9A-Fa-f]/.test(value)) return;
         else if (parseInt(value, 16) > 255) return;
         break;
     }
 
-    const newLine = {
-      address: address,
-      binary:
-        column === "binary"
-          ? parseInt(value, 2).toString(2).padStart(8, "0")
-          : parseInt(value, 16).toString(2).padStart(8, "0"),
-      hexa:
-        column === "hexa"
-          ? parseInt(value, 16).toString(16).padStart(2, "0").toUpperCase()
-          : parseInt(value, 2).toString(16).padStart(2, "0").toUpperCase(),
-    };
-
-    // Cria nova tabela de memória
-    const newMemoryTable: DataTableRow[] = memoryTable.map((row) =>
-      row.address === address ? newLine : row
+    setMemory(
+      memory.map((memoryValue, index) => {
+        return index === address
+          ? column === Column.binary
+            ? parseInt(value, 2)
+            : parseInt(value, 16)
+          : memoryValue;
+      })
     );
-
-    setMemoryTable(newMemoryTable);
-
-    setMemory(newMemoryTable.map((row) => parseInt(row.binary, 2)));
   }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    address: string,
-    field: keyof DataTableRow
+    column: Column,
+    address: number
   ) => {
-    onDataTableChange(field, address, e.target.value);
+    onDataTableChange(column, address, e.target.value);
   };
 
   return (
@@ -78,21 +56,29 @@ function MemoryTable({ memory, setMemory }: MemoryTableProps) {
         </tr>
       </thead>
       <tbody>
-        {memoryTable.map((row) => (
-          <tr key={row.address}>
-            <td className={styles.addresshexa}>{row.address}</td>
+        {memory.map((row, index) => (
+          <tr
+            key={"memory" + index}
+            style={{
+              backgroundColor:
+                file.registers["PC"].value === index ? "lightblue" : undefined,
+            }}
+          >
+            <td className={styles.addresshexa}>
+              {index.toString(16).padStart(2, "0").toUpperCase()}
+            </td>
             <td>
               <input
                 type="text"
-                value={row.binary}
-                onChange={(e) => handleChange(e, row.address, "binary")}
+                value={row.toString(2).padStart(8, "0")}
+                onChange={(e) => handleChange(e, Column.binary, index)}
               />
             </td>
             <td>
               <input
                 type="text"
-                value={row.hexa}
-                onChange={(e) => handleChange(e, row.address, "hexa")}
+                value={row.toString(16).padStart(2, "0").toUpperCase()}
+                onChange={(e) => handleChange(e, Column.hexa, index)}
               />
             </td>
           </tr>

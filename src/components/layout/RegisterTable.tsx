@@ -2,14 +2,12 @@ import "./RegisterTable.module.css";
 import RegisterFile from "../../models/registerFile";
 import InstructionSet from "../../models/instructionSet";
 
-
 interface RegisterTableProps {
   file: RegisterFile;
   isa: InstructionSet;
 }
 
 function RegisterTable({ file, isa }: RegisterTableProps) {
- 
   return (
     <table>
       <thead>
@@ -23,7 +21,7 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
         {Object.keys(file.registers).map((registerName) => {
           const register = file.registers[registerName];
           return (
-            <tr key={register.name}>
+            <tr key={Math.random()}>
               <td>{register.name}</td>
               <td>
                 {register.value
