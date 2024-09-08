@@ -1,11 +1,12 @@
 import Navbar from "./components/layout/Navbar";
 import Memory from "./components/pages/Memory";
-import { useState } from "react";
+import { memo, useEffect, useState } from "react";
 import RegisterFile from "./models/registerFile";
 import InstructionSet from "./models/instructionSet";
 import { searchAddress, searchInstruction } from "./services/operations";
 import styles from "./App.module.css";
 import Simulation from "./components/pages/Simulation";
+import ActionsBar from "./components/layout/ActionsBar";
 
 enum Phase {
   searchInstruction,
@@ -15,6 +16,8 @@ enum Phase {
 
 let phase: Phase = Phase.searchInstruction;
 let cicle: number = 0;
+
+let fHnd: FileSystemFileHandle;
 
 function App() {
   const [registers, setRegisters] = useState<RegisterFile>(new RegisterFile());
@@ -174,24 +177,115 @@ function App() {
     setRtl([]);
   }
 
+  function getCurrentDateTime() {
+    const now = new Date();
+
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = now.getFullYear();
+
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+
+    return `${day}-${month}-${year} ${hours}-${minutes}`;
+  }
+
+  async function save() {
+    if (!("showOpenFilePicker" in self)) {
+      downloadMemory();
+      return;
+    }
+
+    if (fHnd) {
+      const writable = await fHnd.createWritable();
+      await writable.write(JSON.stringify(memory));
+      await writable.close();
+    } else
+      fHnd = await window.showSaveFilePicker({
+        suggestedName: "Bisk-8 Memory " + getCurrentDateTime() + ".json",
+        types: [
+          {
+            description: "Memória do Bisk-8",
+            accept: {
+              "application/json": [".json"],
+            },
+          },
+        ],
+      });
+  }
+
+  function downloadMemory() {
+    // create file in browser
+    const fileName = "Bisk-8 Memory " + getCurrentDateTime();
+    const json = JSON.stringify(memory);
+    const blob = new Blob([json], { type: "application/json" });
+    const href = URL.createObjectURL(blob);
+
+    // create "a" HTLM element with href to file
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = fileName + ".json";
+    document.body.appendChild(link);
+    link.click();
+
+    // clean up "a" element & remove ObjectURL
+    document.body.removeChild(link);
+    URL.revokeObjectURL(href);
+  }
+
+  function uploadMemory() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = (e) => {
+          const text = e.target?.result as string;
+          const newMemory = JSON.parse(text);
+          setMemory(newMemory);
+        };
+      }
+    };
+    input.click();
+  }
+
+  // Avisa de saída sem salvar
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      return "Você tem certeza que deseja sair?";
+    };
+
+    if (memory.some((value) => value !== 0))
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [memory]);
+
   return (
     <>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      />
       <Navbar />
       <div className={styles.container}>
         <div className={styles.left}>
           <div className={styles.buttons}>
-            <button className={styles.emojiButton} onClick={clear}>
-              🧹
-            </button>
-            <button className={styles.emojiButton} onClick={runAll}>
-              ▶️
-            </button>
-            <button className={styles.emojiButton} onClick={runInstByInst}>
-              InstByInst
-            </button>
-            <button className={styles.emojiButton} onClick={runCicleByCicle}>
-              CicleByCicle
-            </button>
+            <ActionsBar
+              clear={clear}
+              uploadMemory={uploadMemory}
+              save={save}
+              downloadMemory={downloadMemory}
+              runAll={runAll}
+              runInstByInst={runInstByInst}
+              runCicleByCicle={runCicleByCicle}
+            />
           </div>
           <h2>Memória</h2>
           <Memory memory={memory} setMemory={setMemory} file={registers} />

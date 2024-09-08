@@ -26,17 +26,3 @@ html {
   display: flex;
   justify-content: flex-end;
 }
-
-.emojiButton {
-  font-size: 20px; /* Adjust the size of the emoji */
-  padding: 5px;
-  border: none;
-  background-color: #f0f0f0;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.emojiButton:hover {
-  background-color: #e0e0e0;
-}
