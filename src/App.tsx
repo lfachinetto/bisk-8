@@ -1,6 +1,6 @@
 import Navbar from "./components/layout/Navbar";
 import Memory from "./components/pages/Memory";
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import RegisterFile from "./models/registerFile";
 import InstructionSet from "./models/instructionSet";
 import { searchAddress, searchInstruction } from "./services/operations";
@@ -287,8 +287,13 @@ function App() {
               runCicleByCicle={runCicleByCicle}
             />
           </div>
-          <h2>Memória</h2>
-          <Memory memory={memory} setMemory={setMemory} file={registers} />
+       
+          <Memory
+            memory={memory}
+            setMemory={setMemory}
+            file={registers}
+            isa={isa}
+          />
         </div>
         <div className={styles.right}>
           <br />
