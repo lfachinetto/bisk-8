@@ -21,8 +21,3 @@ html {
   /* background-color: #f0f0f0; */
   border-right: 15px solid grey; /* Border between the divs */
 }
-
-.buttons {
-  display: flex;
-  justify-content: flex-end;
-}

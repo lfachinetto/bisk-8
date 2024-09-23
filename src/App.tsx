@@ -7,6 +7,8 @@ import { searchAddress, searchInstruction } from "./services/operations";
 import styles from "./App.module.css";
 import Simulation from "./components/pages/Simulation";
 import ActionsBar from "./components/layout/ActionsBar";
+import OpcodeError from "./models/opcodeError";
+import ActionsBarSimulation from "./components/layout/ActionsBarSimulation";
 
 enum Phase {
   searchInstruction,
@@ -16,6 +18,7 @@ enum Phase {
 
 let phase: Phase = Phase.searchInstruction;
 let cicle: number = 0;
+let inMiddleInst: boolean = false;
 
 let fHnd: FileSystemFileHandle;
 
@@ -27,13 +30,14 @@ function App() {
 
   function runCicleByCicle() {
     if (registers.registers["HLT"].value === 1) {
-      console.log("Halted!");
+      alert("Halted!");
       return;
     }
 
     const newRegisters = registers.clone();
     const newMemory = [...memory];
     const newRtl: string[] = [...rtl];
+    inMiddleInst = true;
 
     if (phase === Phase.searchInstruction) {
       const length = searchInstruction.length;
@@ -92,6 +96,7 @@ function App() {
       if (cicle === length - 1) {
         cicle = 0;
         phase = Phase.searchInstruction;
+        inMiddleInst = false;
       } else {
         cicle++;
       }
@@ -105,7 +110,7 @@ function App() {
 
   function runInstByInst() {
     if (registers.registers["HLT"].value === 1) {
-      console.log("Halted!");
+      alert("Halted!");
       return;
     }
     const newRegisters = registers.clone();
@@ -120,22 +125,55 @@ function App() {
     setRtl(newRtl);
   }
 
-  function runAll() {
+  function hasState(): boolean {
+    // Identifica se algum registrador tem valor
+    for (const register in registers.registers) {
+      if (registers.registers[register].value !== 0) return true;
+    }
+    return false;
+  }
+
+  async function runAll() {
     const newRegisters = new RegisterFile();
     const newMemory = [...memory];
     const newRtl: string[] = [];
 
-    while (newRegisters.registers["PC"].value < 256) {
-      runInstruction(newRegisters, newMemory, newRtl);
-      if (newRegisters.registers["HLT"].value === 1) {
-        break;
-      }
+    // Confirma limpeza de estado
+    if (
+      hasState() &&
+      !window.confirm(
+        "Ao executar tudo, os registradores serão resetados. Deseja continuar?"
+      )
+    ) {
+      return;
     }
+
+    // Inicia timer da execução para interromper em caso de loop infinito
+    let start: number | null = Date.now();
+
+    do {
+      try {
+        runInstruction(newRegisters, newMemory, newRtl);
+      } catch (e) {
+        if (e instanceof OpcodeError) {
+          alert(e.message);
+          break;
+        }
+      }
+
+      // Verifica se execução está demorando muito
+      if (start && Date.now() - start > 5000) {
+        if (!window.confirm("A execução está demorando, deseja continuar?"))
+          break;
+        else start = null;
+      }
+    } while (newRegisters.registers["HLT"].value !== 1);
 
     // Atualiza estado para refletir na interface
     setRegisters(newRegisters);
     setMemory(newMemory);
-    setRtl(newRtl);
+    // Mostra apenas 100 últimos passos
+    setRtl(newRtl.slice(-100));   
   }
 
   function runInstruction(
@@ -152,6 +190,7 @@ function App() {
     const instruction = isa.instructions[newRegisters.registers["IR"].value];
 
     if (instruction) {
+      console.log(instruction);
       // Realiza etapas de busca de endereço (instruções de 2 bytes)
       if (instruction.requiresAddress) {
         newRtl.push("#Ciclo de busca do endereço");
@@ -166,12 +205,13 @@ function App() {
         newRtl.push(cicle(newRegisters, newMemory));
       });
     } else
-      throw new Error(
-        `Opcode ${newMemory[newRegisters.registers["PC"].value].toString(2).padStart(8, "0")} not found`
+      throw new OpcodeError(
+        `Erro: Opcode ${newMemory[newRegisters.registers["IR"].value].toString(16).padStart(2, "0")} não encontrado`
       );
   }
 
   function clear() {
+    inMiddleInst = false;
     setRegisters(new RegisterFile());
     setMemory(new Array(256).fill(0));
     setRtl([]);
@@ -214,6 +254,7 @@ function App() {
       });
   }
 
+  // Função caso navegador não suporte save
   function downloadMemory() {
     // create file in browser
     const fileName = "Bisk-8 Memory " + getCurrentDateTime();
@@ -234,6 +275,16 @@ function App() {
   }
 
   function uploadMemory() {
+    // Confirma limpeza de estado
+    if (
+      (hasState() || memory.some((value) => value !== 0)) &&
+      !window.confirm(
+        "Ao fazer upload, os registradores e memória serão resetados. Deseja continuar?"
+      )
+    ) {
+      return;
+    }
+
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".json";
@@ -243,13 +294,25 @@ function App() {
         const reader = new FileReader();
         reader.readAsText(file, "UTF-8");
         reader.onload = (e) => {
-          const text = e.target?.result as string;
-          const newMemory = JSON.parse(text);
-          setMemory(newMemory);
+          try {
+            const text = e.target?.result as string;
+            const newMemory = JSON.parse(text);
+            setMemory(newMemory);
+            setRegisters(new RegisterFile());
+            setRtl([]);
+          } catch (e) {
+            alert("Ocorreu um erro ao fazer upload do arquivo!");
+          }
         };
       }
     };
     input.click();
+  }
+
+  function clearRegisters() {
+    inMiddleInst = false;
+    setRegisters(new RegisterFile());
+    setRtl([]);
   }
 
   // Avisa de saída sem salvar
@@ -281,13 +344,12 @@ function App() {
               clear={clear}
               uploadMemory={uploadMemory}
               save={save}
-              downloadMemory={downloadMemory}
               runAll={runAll}
-              runInstByInst={runInstByInst}
+              runInstByInst={inMiddleInst ? null : runInstByInst}
               runCicleByCicle={runCicleByCicle}
             />
           </div>
-       
+
           <Memory
             memory={memory}
             setMemory={setMemory}
@@ -296,8 +358,9 @@ function App() {
           />
         </div>
         <div className={styles.right}>
-          <br />
-          <br />
+          <div className={styles.buttons}>
+            <ActionsBarSimulation clearRegisters={clearRegisters} />
+          </div>
           <h2>Simulação</h2>
           <Simulation registers={registers} isa={isa} rtl={rtl} />
         </div>

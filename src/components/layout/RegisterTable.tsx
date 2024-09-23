@@ -24,7 +24,7 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
             <tr key={Math.random()}>
               <td>{register.name}</td>
               <td>
-                {register.value
+                {(register.value & 0xFF)
                   .toString(2)
                   .padStart(register.bitLength, "0")
                   .toUpperCase()}
@@ -59,7 +59,7 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
                     return `Sinal ${sinal} Zero ${zero}`;
                   }
 
-                  return register.value
+                  return (register.value & 0xFF)
                     .toString(16)
                     .padStart(Math.ceil(register.bitLength / 4), "0")
                     .toUpperCase();

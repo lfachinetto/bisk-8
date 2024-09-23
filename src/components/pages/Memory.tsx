@@ -20,7 +20,6 @@ function Memory({ memory, setMemory, file, isa }: MemoryProps) {
 
   return (
     <div>
-      {" "}
       <h2>
         Memória
         <button

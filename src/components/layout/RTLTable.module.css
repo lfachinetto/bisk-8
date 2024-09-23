@@ -6,7 +6,7 @@ table {
   width: 500px;
   margin: 20px auto;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: fixed; overflow: auto;
 }
 
 th,
@@ -45,4 +45,11 @@ input:focus {
 
 .title {
   font-weight: bold;
+}
+
+.rtlContainer {
+  flex: 1;
+  height: 40vh;
+  width: 550px;
+  overflow: auto;
 }

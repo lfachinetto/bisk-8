@@ -10,9 +10,3 @@ h2 {
   overflow: auto;
 }
 
-.rtlContainer {
-  flex: 1;
-  height: 40vh;
-  width: 550px;
-  overflow: auto;
-}

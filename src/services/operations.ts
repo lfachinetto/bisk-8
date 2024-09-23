@@ -15,7 +15,10 @@ export const searchInstruction = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["PC"].value += 1;
+    // Se PC chegou ao fim, volta para o início
+    if (file.registers["PC"].value === 2 ** file.registers["PC"].bitLength - 1)
+      file.registers["PC"].value = 0;
+    else file.registers["PC"].value += 1;
     return "PC ← PC + 1";
   },
   (file: RegisterFile): string => {
@@ -38,7 +41,10 @@ export const searchAddress = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["PC"].value += 1;
+    // Se PC chegou ao fim, volta para o início
+    if (file.registers["PC"].value === 2 ** file.registers["PC"].bitLength)
+      file.registers["PC"].value = 0;
+    else file.registers["PC"].value += 1;
     return "PC ← PC + 1";
   },
 ];
@@ -102,7 +108,9 @@ export const add = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["ACC"].value += file.registers["MDR"].value;
+    file.registers["ACC"].value = toSigned8Bit(
+      file.registers["ACC"].value + file.registers["MDR"].value
+    );
     testFlags(file);
     return "ACC ← ACC + MDR";
   },
@@ -122,7 +130,9 @@ export const sub = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["ACC"].value -= file.registers["MDR"].value;
+    file.registers["ACC"].value = toSigned8Bit(
+      file.registers["ACC"].value - file.registers["MDR"].value
+    );
     testFlags(file);
     return "ACC ← ACC - MDR";
   },
@@ -142,7 +152,9 @@ export const mul = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["ACC"].value *= file.registers["MDR"].value;
+    file.registers["ACC"].value = toSigned8Bit(
+      file.registers["ACC"].value * file.registers["MDR"].value
+    );
     testFlags(file);
     return "ACC ← ACC * MDR";
   },
@@ -162,7 +174,9 @@ export const div = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["ACC"].value /= file.registers["MDR"].value;
+    file.registers["ACC"].value = toSigned8Bit(
+      file.registers["ACC"].value / file.registers["MDR"].value
+    );
     testFlags(file);
     return "ACC ← ACC / MDR";
   },
@@ -172,7 +186,7 @@ export const div = [
 // 4 ACC ← !ACC
 export const not = [
   (file: RegisterFile): string => {
-    file.registers["ACC"].value = ~file.registers["ACC"].value;
+    file.registers["ACC"].value = toSigned8Bit(~file.registers["ACC"].value);
     testFlags(file);
     return "ACC ← !ACC";
   },
@@ -192,7 +206,8 @@ export const and = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["ACC"].value &= file.registers["MDR"].value;
+    file.registers["ACC"].value =
+      file.registers["ACC"].value & file.registers["MDR"].value;
     testFlags(file);
     return "ACC ← ACC & MDR";
   },
@@ -212,7 +227,9 @@ export const or = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["ACC"].value |= file.registers["MDR"].value;
+    file.registers["ACC"].value = toSigned8Bit(
+      file.registers["ACC"].value | file.registers["MDR"].value
+    );
     testFlags(file);
     return "ACC ← ACC | MDR";
   },
@@ -232,7 +249,9 @@ export const xor = [
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
-    file.registers["ACC"].value ^= file.registers["MDR"].value;
+    file.registers["ACC"].value = toSigned8Bit(
+      file.registers["ACC"].value ^ file.registers["MDR"].value
+    );
     testFlags(file);
     return "ACC ← ACC ^ MDR";
   },
@@ -303,4 +322,10 @@ function testFlags(file: RegisterFile) {
   } else {
     file.registers["PSR"].value &= 0b01;
   }
+}
+
+// Função para garantir complemento de 2 de 8 bits
+function toSigned8Bit(value: number) {
+  const maskedValue = value & 0xFF; // Aplica a máscara de 8 bits
+  return maskedValue > 127 ? maskedValue - 256 : maskedValue; // Converte para complemento de 2
 }

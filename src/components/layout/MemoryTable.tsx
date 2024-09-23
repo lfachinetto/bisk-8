@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import RegisterFile from "../../models/registerFile";
 import styles from "./MemoryTable.module.css";
 
@@ -57,6 +58,21 @@ function MemoryTable({
     onDataTableChange(column, address, e.target.value);
   };
 
+  const currentRowRef = useRef<HTMLTableRowElement>(null);
+
+  const scrollToRow = () => {
+    if (currentRowRef.current) {
+      currentRowRef.current.scrollIntoView({
+        behavior: "instant",
+        block: "nearest",
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToRow();
+  }, [file]);
+
   return (
     <table>
       <thead>
@@ -68,7 +84,7 @@ function MemoryTable({
       </thead>
       <tbody>
         {memory.map((row, index) => (
-          <tr
+          <tr ref={index === file.registers["PC"].value ? currentRowRef : null}
             key={"memory" + index}
             style={{
               backgroundColor:
