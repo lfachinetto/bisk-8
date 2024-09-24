@@ -4,9 +4,10 @@ interface ActionsBarProps {
   clear: () => void;
   uploadMemory: () => void;
   save: () => void;
-  runAll: () => void;
+  runAll: (() => void) | null;
   runInstByInst: (() => void) | null;
   runCicleByCicle: () => void;
+  stop: () => void;
 }
 
 function ActionsBar({
@@ -16,6 +17,7 @@ function ActionsBar({
   runAll,
   runInstByInst,
   runCicleByCicle,
+  stop
 }: ActionsBarProps) {
   return (
     <div className={styles.actionBar}>
@@ -36,16 +38,26 @@ function ActionsBar({
           title="Salvar memória"
         >
           <span className="material-symbols-outlined">save</span>
-        </button>       
+        </button>
       </div>
       <div className={styles.rightActions}>
-        <button
-          className={styles.emojiButton}
-          onClick={runAll}
-          title="Executar tudo"
-        >
-          <span className="material-symbols-outlined">play_arrow</span>
-        </button>
+        {runAll ? (
+          <button
+            className={styles.emojiButton}
+            onClick={runAll}
+            title="Executar tudo"
+          >
+            <span className="material-symbols-outlined">play_arrow</span>
+          </button>
+        ) : (
+          <button
+            className={styles.emojiButton}
+            onClick={stop}
+            title="Parar"
+          >
+            <span className="material-symbols-outlined">stop</span>
+          </button>
+        )}
         {runInstByInst ? (
           <button
             className={styles.emojiButton}

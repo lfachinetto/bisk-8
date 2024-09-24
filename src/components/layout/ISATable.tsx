@@ -27,7 +27,10 @@ function ISATable({ isa, field }: ISATableProps) {
               <tr
                 key={Math.random()}
                 style={{
-                  color: field === instruction.opcode ? "blue" : undefined,
+                  color:
+                    field !== undefined && (field & 0x0f) === instruction.opcode
+                      ? "blue"
+                      : undefined,
                 }}
               >
                 <td>{instruction.mnemonic}</td>

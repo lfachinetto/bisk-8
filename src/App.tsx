@@ -7,7 +7,6 @@ import { searchAddress, searchInstruction } from "./services/operations";
 import styles from "./App.module.css";
 import Simulation from "./components/pages/Simulation";
 import ActionsBar from "./components/layout/ActionsBar";
-import OpcodeError from "./models/opcodeError";
 import ActionsBarSimulation from "./components/layout/ActionsBarSimulation";
 
 enum Phase {
@@ -19,8 +18,15 @@ enum Phase {
 let phase: Phase = Phase.searchInstruction;
 let cicle: number = 0;
 let inMiddleInst: boolean = false;
+let unsavedChanges: boolean = false;
+// TODO State
+let runningAll = false;
 
-let fHnd: FileSystemFileHandle;
+// Clock temporário
+let clock = 1;
+let clockDelay = (1 / clock) * 1000;
+
+let fsHandle: FileSystemFileHandle;
 
 function App() {
   const [registers, setRegisters] = useState<RegisterFile>(new RegisterFile());
@@ -51,17 +57,12 @@ function App() {
         const instruction =
           isa.instructions[newRegisters.registers["IR"].value];
 
-        if (instruction) {
-          cicle = 0;
-          if (instruction.requiresAddress) {
-            phase = Phase.searchAddress;
-          } else {
-            phase = Phase.executeInstruction;
-          }
-        } else
-          throw new Error(
-            `Opcode ${newMemory[newRegisters.registers["PC"].value].toString(2).padStart(8, "0")} not found`
-          );
+        cicle = 0;
+        if (instruction.requiresAddress) {
+          phase = Phase.searchAddress;
+        } else {
+          phase = Phase.executeInstruction;
+        }
       } else {
         cicle++;
       }
@@ -85,12 +86,7 @@ function App() {
 
       if (cicle == 0) newRtl.push("#Ciclo de execução da instrução");
 
-      newRtl.push(
-        isa.instructions[newRegisters.registers["IR"].value].operation[cicle](
-          newRegisters,
-          newMemory
-        )
-      );
+      newRtl.push(instruction.operation[cicle](newRegisters, newMemory));
 
       // Testa se terminou fase
       if (cicle === length - 1) {
@@ -148,32 +144,25 @@ function App() {
       return;
     }
 
-    // Inicia timer da execução para interromper em caso de loop infinito
-    let start: number | null = Date.now();
+    // Ativa flag de executando
+    runningAll = true;
 
     do {
-      try {
-        runInstruction(newRegisters, newMemory, newRtl);
-      } catch (e) {
-        if (e instanceof OpcodeError) {
-          alert(e.message);
-          break;
-        }
-      }
+      const startTime = performance.now();
+      runInstruction(newRegisters, newMemory, newRtl);
+      const elapsedTime = performance.now() - startTime;
 
-      // Verifica se execução está demorando muito
-      if (start && Date.now() - start > 5000) {
-        if (!window.confirm("A execução está demorando, deseja continuar?"))
-          break;
-        else start = null;
-      }
-    } while (newRegisters.registers["HLT"].value !== 1);
+      // Clock
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.max(0, clockDelay - elapsedTime))
+      );
 
-    // Atualiza estado para refletir na interface
-    setRegisters(newRegisters);
-    setMemory(newMemory);
-    // Mostra apenas 100 últimos passos
-    setRtl(newRtl.slice(-100));   
+      // Atualiza estado para refletir na interface
+      setRegisters(newRegisters);
+      setMemory(newMemory);
+      // Mostra apenas 100 últimos passos
+      setRtl(newRtl.slice(-100));
+    } while (newRegisters.registers["HLT"].value !== 1 && runningAll);
   }
 
   function runInstruction(
@@ -189,25 +178,20 @@ function App() {
 
     const instruction = isa.instructions[newRegisters.registers["IR"].value];
 
-    if (instruction) {
-      console.log(instruction);
-      // Realiza etapas de busca de endereço (instruções de 2 bytes)
-      if (instruction.requiresAddress) {
-        newRtl.push("#Ciclo de busca do endereço");
-        searchAddress.forEach((cicle) => {
-          newRtl.push(cicle(newRegisters, newMemory));
-        });
-      }
-
-      newRtl.push("#Ciclo de execução da instrução");
-      // Executa operação da instrução
-      instruction.operation.forEach((cicle) => {
+    console.log(instruction);
+    // Realiza etapas de busca de endereço (instruções de 2 bytes)
+    if (instruction.requiresAddress) {
+      newRtl.push("#Ciclo de busca do endereço");
+      searchAddress.forEach((cicle) => {
         newRtl.push(cicle(newRegisters, newMemory));
       });
-    } else
-      throw new OpcodeError(
-        `Erro: Opcode ${newMemory[newRegisters.registers["IR"].value].toString(16).padStart(2, "0")} não encontrado`
-      );
+    }
+
+    newRtl.push("#Ciclo de execução da instrução");
+    // Executa operação da instrução
+    instruction.operation.forEach((cicle) => {
+      newRtl.push(cicle(newRegisters, newMemory));
+    });
   }
 
   function clear() {
@@ -236,12 +220,12 @@ function App() {
       return;
     }
 
-    if (fHnd) {
-      const writable = await fHnd.createWritable();
+    if (fsHandle) {
+      const writable = await fsHandle.createWritable();
       await writable.write(JSON.stringify(memory));
       await writable.close();
     } else
-      fHnd = await window.showSaveFilePicker({
+      fsHandle = await window.showSaveFilePicker({
         suggestedName: "Bisk-8 Memory " + getCurrentDateTime() + ".json",
         types: [
           {
@@ -252,6 +236,8 @@ function App() {
           },
         ],
       });
+
+    unsavedChanges = false;
   }
 
   // Função caso navegador não suporte save
@@ -315,11 +301,20 @@ function App() {
     setRtl([]);
   }
 
+  function changeClock(value:number){
+    clock = value;
+    clockDelay = (1 / clock) * 1000;
+  }
+
   // Avisa de saída sem salvar
   useEffect(() => {
+    unsavedChanges = true;
+
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      return "Você tem certeza que deseja sair?";
+      if (unsavedChanges) {
+        event.preventDefault();
+        return "Você tem certeza que deseja sair?";
+      }
     };
 
     if (memory.some((value) => value !== 0))
@@ -344,7 +339,8 @@ function App() {
               clear={clear}
               uploadMemory={uploadMemory}
               save={save}
-              runAll={runAll}
+              runAll={runningAll ? null : runAll}
+              stop={() => (runningAll = false)}
               runInstByInst={inMiddleInst ? null : runInstByInst}
               runCicleByCicle={runCicleByCicle}
             />
@@ -359,7 +355,7 @@ function App() {
         </div>
         <div className={styles.right}>
           <div className={styles.buttons}>
-            <ActionsBarSimulation clearRegisters={clearRegisters} />
+            <ActionsBarSimulation clearRegisters={clearRegisters} changeClock={changeClock} />
           </div>
           <h2>Simulação</h2>
           <Simulation registers={registers} isa={isa} rtl={rtl} />

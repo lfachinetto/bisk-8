@@ -30,17 +30,36 @@
   gap: 10px;
 }
 
-/* Button styles */
-/* .actionBar button {
-  padding: 10px 20px;
-  cursor: pointer;
-  background-color: #007BFF;
-  border: none;
-  color: white;
-  border-radius: 5px;
-} */
+.menu {
+  position: absolute;
+  top: 100%; /* Position directly below the button */
+  left: 50%;
+  transform: translateX(-50%); /* Center the menu */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 200px; /* Set a width for the menu */
+}
 
-/* Hover effect on buttons */
-/* .actionBar button:hover {
-  background-color: #0056b3;
-} */
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.menu li:hover {
+  background-color: #f0f0f0;
+}
+
+.divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 0; /* No margin for dividers */
+}

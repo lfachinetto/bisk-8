@@ -22,7 +22,7 @@ export const searchInstruction = [
     return "PC ← PC + 1";
   },
   (file: RegisterFile): string => {
-    file.registers["IR"].value = file.registers["MDR"].value;
+    file.registers["IR"].value = file.registers["MDR"].value & 0x0F;
     return "IR ← MDR";
   },
 ];
