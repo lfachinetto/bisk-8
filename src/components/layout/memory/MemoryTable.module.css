@@ -1,21 +1,8 @@
-.App {
-  text-align: center;
-}
-
-table {
-  width: 500px;
-  margin: 20px auto;
-  border-collapse: collapse;
-  table-layout: fixed;
+.tableContainer {
+  display: flex;
+  width: 100%;
   overflow: auto;
-}
-
-th,
-td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  text-align: center;
+  margin: 0 auto;
 }
 
 .address {
@@ -26,11 +13,11 @@ td {
   background-color: rgba(128, 128, 128, 0.089);
 }
 
-th {
+.th {
   background-color: #f4f4f4;
 }
 
-input {
+.input {
   width: 100%;
   border: none;
   background: none;
@@ -40,6 +27,6 @@ input {
   text-align: center;
 }
 
-input:focus {
+.input:focus {
   outline: none;
 }

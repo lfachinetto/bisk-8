@@ -18,6 +18,32 @@ html {
 }
 
 .left {
-  /* background-color: #f0f0f0; */
-  border-right: 15px solid grey; /* Border between the divs */
+  border-right: 15px solid grey;
+}
+
+table {
+  width: auto;
+  margin: 20px auto;
+  border-collapse: collapse;
+  table-layout: auto;
+  overflow: auto;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+h1,
+h2,
+h3 {
+  text-align: center;
 }

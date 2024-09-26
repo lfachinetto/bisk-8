@@ -1,7 +1,7 @@
 import InstructionSet from "../../models/instructionSet";
 import RegisterFile from "../../models/registerFile";
-import ISATable from "../layout/ISATable";
-import MemoryTable from "../layout/MemoryTable";
+import ISATable from "../layout/memory/ISATable";
+import MemoryTable from "../layout/memory/MemoryTable";
 import styles from "./Memory.module.css";
 import React, { useState } from "react";
 
@@ -23,26 +23,33 @@ function Memory({ memory, setMemory, file, isa }: MemoryProps) {
       <h2>
         Memória
         <button
-          className={styles.emojiButton}
+          className={styles.button}
           onClick={() => setShowISA(!showISA)}
           title="Visualizar ISA"
         >
           <span className="material-symbols-outlined">info</span>
         </button>
       </h2>
-      <div className={styles.container}>
-        <center>
-          <div className={styles.tableContainer}>
-            <MemoryTable
-              memory={memory}
-              setMemory={setMemory}
-              file={file}
-              setCurrentField={setCurrentField}
-            />
-          </div>
-          {showISA ? <ISATable isa={isa} field={currentField} /> : ""}
-        </center>
-      </div>
+
+      <center>
+        <MemoryTable
+          memory={memory}
+          setMemory={setMemory}
+          file={file}
+          setCurrentField={setCurrentField}
+          height={showISA ? "40" : "75"}
+        />
+        {showISA ? (
+          <>
+            <br />
+            <h3>ISA</h3>
+            <br />
+            <ISATable isa={isa} field={currentField} />
+          </>
+        ) : (
+          ""
+        )}
+      </center>
     </div>
   );
 }

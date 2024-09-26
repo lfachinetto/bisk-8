@@ -11,3 +11,16 @@
 .button:hover {
   background-color: #e0e0e0;
 }
+
+.actionBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.leftActions,
+.rightActions {
+  display: flex;
+  gap: 10px;
+}

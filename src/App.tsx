@@ -6,8 +6,8 @@ import InstructionSet from "./models/instructionSet";
 import { searchAddress, searchInstruction } from "./services/operations";
 import styles from "./App.module.css";
 import Simulation from "./components/pages/Simulation";
-import ActionsBar from "./components/layout/ActionsBar";
-import ActionsBarSimulation from "./components/layout/ActionsBarSimulation";
+import SimulationToolbar from "./components/layout/simulation/SimulationToolbar";
+import MemoryToolbar from "./components/layout/memory/MemoryToolbar";
 
 enum Phase {
   searchInstruction,
@@ -19,12 +19,8 @@ let phase: Phase = Phase.searchInstruction;
 let cicle: number = 0;
 let inMiddleInst: boolean = false;
 let unsavedChanges: boolean = false;
-// TODO State
-let runningAll = false;
-
-// Clock temporário
+let runningLoop = false;
 let clock = 1;
-let clockDelay = (1 / clock) * 1000;
 
 let fsHandle: FileSystemFileHandle;
 
@@ -32,6 +28,8 @@ function App() {
   const [registers, setRegisters] = useState<RegisterFile>(new RegisterFile());
   const [memory, setMemory] = useState<number[]>(new Array(256).fill(0));
   const [rtl, setRtl] = useState<string[]>([]);
+  const [runningAll, setRunningAll] = useState(false);
+  const [clockState, setClockState] = useState(1);
   const isa = new InstructionSet();
 
   function runCicleByCicle() {
@@ -145,16 +143,21 @@ function App() {
     }
 
     // Ativa flag de executando
-    runningAll = true;
+
+    setRunningAll(true);
+    runningLoop = true;
 
     do {
       const startTime = performance.now();
       runInstruction(newRegisters, newMemory, newRtl);
       const elapsedTime = performance.now() - startTime;
 
+      const clockPeriod = 1000 / clock;
+      const delayTime = clockPeriod - elapsedTime;
+
       // Clock
       await new Promise((resolve) =>
-        setTimeout(resolve, Math.max(0, clockDelay - elapsedTime))
+        setTimeout(resolve, Math.max(0, delayTime))
       );
 
       // Atualiza estado para refletir na interface
@@ -162,7 +165,7 @@ function App() {
       setMemory(newMemory);
       // Mostra apenas 100 últimos passos
       setRtl(newRtl.slice(-100));
-    } while (newRegisters.registers["HLT"].value !== 1 && runningAll);
+    } while (newRegisters.registers["HLT"].value !== 1 && runningLoop);
   }
 
   function runInstruction(
@@ -178,7 +181,6 @@ function App() {
 
     const instruction = isa.instructions[newRegisters.registers["IR"].value];
 
-    console.log(instruction);
     // Realiza etapas de busca de endereço (instruções de 2 bytes)
     if (instruction.requiresAddress) {
       newRtl.push("#Ciclo de busca do endereço");
@@ -301,11 +303,6 @@ function App() {
     setRtl([]);
   }
 
-  function changeClock(value:number){
-    clock = value;
-    clockDelay = (1 / clock) * 1000;
-  }
-
   // Avisa de saída sem salvar
   useEffect(() => {
     unsavedChanges = true;
@@ -334,18 +331,18 @@ function App() {
       <Navbar />
       <div className={styles.container}>
         <div className={styles.left}>
-          <div className={styles.buttons}>
-            <ActionsBar
-              clear={clear}
-              uploadMemory={uploadMemory}
-              save={save}
-              runAll={runningAll ? null : runAll}
-              stop={() => (runningAll = false)}
-              runInstByInst={inMiddleInst ? null : runInstByInst}
-              runCicleByCicle={runCicleByCicle}
-            />
-          </div>
-
+          <MemoryToolbar
+            clear={clear}
+            uploadMemory={uploadMemory}
+            save={save}
+            runAll={runningAll ? null : runAll}
+            stop={() => {
+              setRunningAll(false);
+              runningLoop = false;
+            }}
+            runInstByInst={inMiddleInst ? null : runInstByInst}
+            runCicleByCicle={runCicleByCicle}
+          />
           <Memory
             memory={memory}
             setMemory={setMemory}
@@ -354,10 +351,14 @@ function App() {
           />
         </div>
         <div className={styles.right}>
-          <div className={styles.buttons}>
-            <ActionsBarSimulation clearRegisters={clearRegisters} changeClock={changeClock} />
-          </div>
-          <h2>Simulação</h2>
+          <SimulationToolbar
+            clearRegisters={clearRegisters}
+            changeClock={(value) => {
+              setClockState(value);
+              clock = value;
+            }}
+            clock={clockState}
+          />
           <Simulation registers={registers} isa={isa} rtl={rtl} />
         </div>
       </div>

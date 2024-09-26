@@ -1,0 +1,12 @@
+.tableContainer {
+  display: flex;
+  height: 30vh;
+  width: 100%;
+  overflow: auto;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+.title {
+  font-weight: bold;
+}
