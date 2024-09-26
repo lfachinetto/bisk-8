@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import InstructionSet from "../../../models/instructionSet";
 import styles from "./ISATable.module.css";
 
@@ -7,6 +8,21 @@ interface ISATableProps {
 }
 
 function ISATable({ isa, field }: ISATableProps) {
+  const isaRef = useRef<HTMLTableRowElement>(null);
+
+  const scrollToPos = () => {
+    if (isaRef.current) {
+      isaRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToPos();
+  }, [field]);
+  
   return (
       <div className={styles.tableContainer}>
         <table>
@@ -21,14 +37,15 @@ function ISATable({ isa, field }: ISATableProps) {
           <tbody>
             {Object.keys(isa.instructions).map((_, i) => {
               const instruction = isa.instructions[i];
+              const isCurrent = field !== undefined && (field & 0x0f) === instruction.opcode;
 
               return (
                 <tr
                   key={i}
+                  ref={isCurrent ? isaRef : undefined}
                   style={{
                     color:
-                      field !== undefined &&
-                      (field & 0x0f) === instruction.opcode
+                    isCurrent
                         ? "blue"
                         : undefined,
                   }}

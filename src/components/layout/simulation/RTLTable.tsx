@@ -34,13 +34,13 @@ function RTLTable({ rtlLog }: RTLTableProps) {
               return (
                 <React.Fragment key={i}>
                   {isComment && i > 0 ? (
-                    <tr key={i + "-1"}>
+                    <tr>
                       <td />
                     </tr>
                   ) : (
                     ""
                   )}
-                  <tr key={i + "-2"}>
+                  <tr>
                     <td className={isComment ? styles.title : ""}>
                       {isComment ? rtl.slice(1) : rtl}
                     </td>
@@ -49,8 +49,10 @@ function RTLTable({ rtlLog }: RTLTableProps) {
               );
             })}
           </tbody>
+          <tfoot>
+            <div ref={tableEndRef} />
+          </tfoot>
         </table>
-        <div ref={tableEndRef} />
       </div>
     </center>
   );
