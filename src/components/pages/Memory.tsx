@@ -3,11 +3,11 @@ import RegisterFile from "../../models/registerFile";
 import ISATable from "../layout/memory/ISATable";
 import MemoryTable from "../layout/memory/MemoryTable";
 import styles from "./Memory.module.css";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface MemoryProps {
   memory: number[];
-  setMemory: React.Dispatch<React.SetStateAction<number[]>>;
+  setMemory: (memory: number[]) => void;
   file: RegisterFile;
   isa: InstructionSet;
 }

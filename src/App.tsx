@@ -19,17 +19,27 @@ let phase: Phase = Phase.searchInstruction;
 let cicle: number = 0;
 let inMiddleInst: boolean = false;
 let unsavedChanges: boolean = false;
-let runningLoop = false;
-let clock = 1;
+
+const IObegin: number = 0x80;
 
 let fsHandle: FileSystemFileHandle;
+
+// Variáveis com uso mais frequente que renderização
+let currentMemory = new Array(256).fill(0);
+let currentRunning = false;
+let currentClock = 1;
+
+let port: SerialPort | null = null;
+let reader: ReadableStreamDefaultReader<string> | null = null;
+let writer: WritableStreamDefaultWriter<string> | null = null;
 
 function App() {
   const [registers, setRegisters] = useState<RegisterFile>(new RegisterFile());
   const [memory, setMemory] = useState<number[]>(new Array(256).fill(0));
   const [rtl, setRtl] = useState<string[]>([]);
-  const [runningAll, setRunningAll] = useState(false);
-  const [clockState, setClockState] = useState(1);
+  const [running, setRunning] = useState(false);
+  const [clock, setClock] = useState(1);
+  const [connected, setConnected] = useState(false);
   const isa = new InstructionSet();
 
   function runCicleByCicle() {
@@ -39,7 +49,6 @@ function App() {
     }
 
     const newRegisters = registers.clone();
-    const newMemory = [...memory];
     const newRtl: string[] = [...rtl];
     inMiddleInst = true;
 
@@ -47,7 +56,7 @@ function App() {
       const length = searchInstruction.length;
       if (cicle == 0) newRtl.push("#Ciclo de busca da instrução");
 
-      newRtl.push(searchInstruction[cicle](newRegisters, newMemory));
+      newRtl.push(searchInstruction[cicle](newRegisters, currentMemory));
 
       // Testa se terminou fase
       if (cicle === length - 1) {
@@ -68,7 +77,7 @@ function App() {
       const length = searchAddress.length;
       if (cicle == 0) newRtl.push("#Ciclo de busca do endereço");
 
-      newRtl.push(searchAddress[cicle](newRegisters, newMemory));
+      newRtl.push(searchAddress[cicle](newRegisters, currentMemory));
 
       // Testa se terminou fase
       if (cicle === length - 1) {
@@ -84,7 +93,7 @@ function App() {
 
       if (cicle == 0) newRtl.push("#Ciclo de execução da instrução");
 
-      newRtl.push(instruction.operation[cicle](newRegisters, newMemory));
+      newRtl.push(instruction.operation[cicle](newRegisters, currentMemory));
 
       // Testa se terminou fase
       if (cicle === length - 1) {
@@ -98,7 +107,7 @@ function App() {
 
     // Atualiza estado para refletir na interface
     setRegisters(newRegisters);
-    setMemory(newMemory);
+    setMemory(currentMemory);
     setRtl(newRtl);
   }
 
@@ -108,14 +117,13 @@ function App() {
       return;
     }
     const newRegisters = registers.clone();
-    const newMemory = [...memory];
     const newRtl: string[] = [...rtl];
 
-    runInstruction(newRegisters, newMemory, newRtl);
+    runInstruction(newRegisters, currentMemory, newRtl);
 
     // Atualiza estado para refletir na interface
     setRegisters(newRegisters);
-    setMemory(newMemory);
+    setMemory(currentMemory);
     setRtl(newRtl);
   }
 
@@ -129,7 +137,6 @@ function App() {
 
   async function runAll() {
     const newRegisters = new RegisterFile();
-    const newMemory = [...memory];
     const newRtl: string[] = [];
 
     // Confirma limpeza de estado
@@ -144,15 +151,15 @@ function App() {
 
     // Ativa flag de executando
 
-    setRunningAll(true);
-    runningLoop = true;
+    setRunning(true);
+    currentRunning = true;
 
     do {
       const startTime = performance.now();
-      runInstruction(newRegisters, newMemory, newRtl);
+      runInstruction(newRegisters, currentMemory, newRtl);
       const elapsedTime = performance.now() - startTime;
 
-      const clockPeriod = 1000 / clock;
+      const clockPeriod = 1000 / currentClock;
       const delayTime = clockPeriod - elapsedTime;
 
       // Clock
@@ -162,10 +169,10 @@ function App() {
 
       // Atualiza estado para refletir na interface
       setRegisters(newRegisters);
-      setMemory(newMemory);
+      setMemory(currentMemory);
       // Mostra apenas 100 últimos passos
       setRtl(newRtl.slice(-100));
-    } while (newRegisters.registers["HLT"].value !== 1 && runningLoop);
+    } while (newRegisters.registers["HLT"].value !== 1 && currentRunning);
   }
 
   function runInstruction(
@@ -199,7 +206,8 @@ function App() {
   function clear() {
     inMiddleInst = false;
     setRegisters(new RegisterFile());
-    setMemory(new Array(256).fill(0));
+    currentMemory = new Array(256).fill(0);
+    setMemory(currentMemory);
     setRtl([]);
   }
 
@@ -303,6 +311,99 @@ function App() {
     setRtl([]);
   }
 
+  async function openConnection() {
+    try {
+      port = await navigator.serial.requestPort();
+      await port.open({ baudRate: 9600 });
+
+      const textEncoder = new TextEncoderStream();
+      textEncoder.readable.pipeTo(port.writable!);
+      writer = textEncoder.writable.getWriter();
+
+      const textDecoder = new TextDecoderStream();
+      port.readable!.pipeTo(textDecoder.writable);
+      reader = textDecoder.readable.getReader();
+
+      setConnected(true);
+
+      readSerialData();
+    } catch (error) {
+      alert("Erro ao abrir conexão serial!");
+      console.error("Error connecting to serial port:", error);
+    }
+  }
+
+  async function readSerialData() {
+    if (!reader) return;
+
+    try {
+      let buffer = "";
+
+      while (port!.readable) {
+        const { value, done } = await reader.read();
+        if (done) {
+          reader.releaseLock();
+          break;
+        }
+
+        if (value) {
+          buffer += value;
+
+          let newlineIndex = buffer.indexOf("\n");
+          while (newlineIndex !== -1 && port!.readable) {
+            const message = buffer.slice(0, newlineIndex).trim();
+            handleSerialRequest(message);
+            buffer = buffer.slice(newlineIndex + 1);
+            newlineIndex = buffer.indexOf("\n");
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error reading serial data:", error);
+    }
+  }
+
+  function handleSerialRequest(message: string) {
+    // Lê considerando < no início
+    // Endereço + operação (0 read, 1 write) + [valor]
+    // E \n no final
+
+    if (message.startsWith("<")) {
+      const data = message.slice(1).split("");
+
+      // Endereço para escrita ou leitura com offset do início de IO
+      const address = IObegin + parseInt(data[0]);
+      const operation = parseInt(data[1]);
+
+      // Escrita
+      if (operation === 0x01 && data.length >= 3) {
+        const value = parseInt(data[2]);
+
+        currentMemory[address] = value;
+        setMemory(currentMemory);
+
+        console.log(`Write: Memory[${address}] = ${value}`);
+      }
+      // Leitura
+      else if (operation === 0x00) {
+        const valueToSend = currentMemory[address];
+        sendDataToSerial(`<${valueToSend}\n`);
+        console.log(`Read: Memory[${address}] = ${valueToSend}`);
+      }
+    }
+  }
+
+  async function sendDataToSerial(data: string) {
+    if (writer) {
+      await writer.write(data);
+    }
+  }
+
+  function setMemoryChange(memory: number[]) {
+    currentMemory = memory;
+    setMemory(currentMemory);
+  }
+
   // Avisa de saída sem salvar
   useEffect(() => {
     unsavedChanges = true;
@@ -328,24 +429,27 @@ function App() {
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
       />
-      <Navbar />
+      <Navbar
+        openConnection={"serial" in navigator ? openConnection : null}
+        connected={connected}
+      />
       <div className={styles.container}>
         <div className={styles.left}>
           <MemoryToolbar
             clear={clear}
             uploadMemory={uploadMemory}
             save={save}
-            runAll={runningAll ? null : runAll}
+            runAll={running ? null : runAll}
             stop={() => {
-              setRunningAll(false);
-              runningLoop = false;
+              setRunning(false);
+              currentRunning = false;
             }}
             runInstByInst={inMiddleInst ? null : runInstByInst}
             runCicleByCicle={runCicleByCicle}
           />
           <Memory
             memory={memory}
-            setMemory={setMemory}
+            setMemory={setMemoryChange}
             file={registers}
             isa={isa}
           />
@@ -354,10 +458,10 @@ function App() {
           <SimulationToolbar
             clearRegisters={clearRegisters}
             changeClock={(value) => {
-              setClockState(value);
-              clock = value;
+              setClock(value);
+              currentClock = value;
             }}
-            clock={clockState}
+            clock={clock}
           />
           <Simulation registers={registers} isa={isa} rtl={rtl} />
         </div>
