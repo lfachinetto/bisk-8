@@ -20,14 +20,14 @@ let cicle: number = 0;
 let inMiddleInst: boolean = false;
 let unsavedChanges: boolean = false;
 
-const IObegin: number = 0x80;
-
 let fsHandle: FileSystemFileHandle;
 
 // Variáveis com uso mais frequente que renderização
 let currentMemory = new Array(256).fill(0);
 let currentRunning = false;
 let currentClock = 1;
+let currentIOBegin = 0xf0;
+let currentIOEnd = 0xff;
 
 let port: SerialPort | null = null;
 let reader: ReadableStreamDefaultReader<string> | null = null;
@@ -40,6 +40,8 @@ function App() {
   const [running, setRunning] = useState(false);
   const [clock, setClock] = useState(1);
   const [connected, setConnected] = useState(false);
+  const [IOBegin, setIOBegin] = useState<number>(0xf0);
+  const [IOEnd, setIOEnd] = useState<number>(0xff);
   const isa = new InstructionSet();
 
   function runCicleByCicle() {
@@ -312,6 +314,8 @@ function App() {
   }
 
   async function openConnection() {
+    if (port) return;
+
     try {
       port = await navigator.serial.requestPort();
       await port.open({ baudRate: 9600 });
@@ -328,6 +332,7 @@ function App() {
 
       readSerialData();
     } catch (error) {
+      setConnected(false);
       alert("Erro ao abrir conexão serial!");
       console.error("Error connecting to serial port:", error);
     }
@@ -359,37 +364,51 @@ function App() {
         }
       }
     } catch (error) {
+      setConnected(false);
       console.error("Error reading serial data:", error);
     }
   }
 
-  function handleSerialRequest(message: string) {
+  async function handleSerialRequest(message: string) {
     // Lê considerando < no início
-    // Endereço + operação (0 read, 1 write) + [valor]
-    // E \n no final
+    // Operação (0 read, 1 write) + endereço 8 bits hexa
+    // + [valor 8 bits hexa] e \n no final
 
-    if (message.startsWith("<")) {
-      const data = message.slice(1).split("");
+    // Regex para validar mensagem
+    const regex = /^(0[\da-fA-F]{2}|1[\da-fA-F]{4})$/;
+
+    if (regex.test(message)) {
+      const data = message.split("");
 
       // Endereço para escrita ou leitura com offset do início de IO
-      const address = IObegin + parseInt(data[0]);
-      const operation = parseInt(data[1]);
+      const operation = parseInt(data[0]);
+      const address = currentIOBegin + parseInt(data[1] + data[2], 16);
+
+      if (address < currentIOBegin || address > currentIOEnd) {
+        console.error(`Endereço fora do intervalo de IO: ${address}!`);
+        return;
+      }
 
       // Escrita
-      if (operation === 0x01 && data.length >= 3) {
-        const value = parseInt(data[2]);
+      if (operation === 0x01 && data.length >= 4) {
+        const value = parseInt(data[3] + data[4], 16);
 
         currentMemory[address] = value;
+
         setMemory(currentMemory);
 
         console.log(`Write: Memory[${address}] = ${value}`);
       }
       // Leitura
       else if (operation === 0x00) {
-        const valueToSend = currentMemory[address];
-        sendDataToSerial(`<${valueToSend}\n`);
+        const valueToSend: number = currentMemory[address];
+        sendDataToSerial(
+          `${valueToSend.toString(16).padStart(2, "0").toUpperCase()}\n`
+        );
         console.log(`Read: Memory[${address}] = ${valueToSend}`);
       }
+    } else {
+      console.error(`Invalid message received: ${message}`);
     }
   }
 
@@ -432,6 +451,16 @@ function App() {
       <Navbar
         openConnection={"serial" in navigator ? openConnection : null}
         connected={connected}
+        IOBegin={IOBegin}
+        setIOBegin={(begin) => {
+          setIOBegin(begin);
+          currentIOBegin = begin;
+        }}
+        IOEnd={IOEnd}
+        setIOEnd={(end) => {
+          setIOEnd(end);
+          currentIOEnd = end;
+        }}
       />
       <div className={styles.container}>
         <div className={styles.left}>

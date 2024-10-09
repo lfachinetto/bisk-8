@@ -18,8 +18,8 @@ class InstructionSet {
       0b1001: new Instruction(0b1001, "OR", true, operations.or),
       0b1010: new Instruction(0b1010, "XOR", true, operations.xor),
       0b1011: new Instruction(0b1011, "JMP", true, operations.jmp),
-      0b1100: new Instruction(0b1100, "JZF", false, operations.jzf),
-      0b1101: new Instruction(0b1101, "JSF", false, operations.jsf),
+      0b1100: new Instruction(0b1100, "JZF", true, operations.jzf),
+      0b1101: new Instruction(0b1101, "JSF", true, operations.jsf),
       0b1110: new Instruction(0b1110, "TST", false, operations.tst),
       0b1111: new Instruction(0b1111, "HLT", false, operations.hlt),
     };
