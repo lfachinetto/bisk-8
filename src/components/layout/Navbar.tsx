@@ -37,20 +37,22 @@ function Navbar({
             {connected ? (
               <div>
                 <input
-                  value={IOBegin.toString(16).toUpperCase()}
-                  maxLength={2}
+                  value={IOBegin.toString(16).padStart(2, "0").toUpperCase()}
                   onChange={(e) => {
                     if (e.target.value.length === 0) return setIOBegin(0);
+                    const value = parseInt(e.target.value, 16);
+                    if (value > 255) return;
                     setIOBegin(parseInt(e.target.value, 16));
                   }}
                 />
                 {" a "}
                 <input
-                  value={IOEnd.toString(16).toUpperCase()}
-                  maxLength={2}
+                  value={IOEnd.toString(16).padStart(2, "0").toUpperCase()}
                   onChange={(e) => {
                     if (e.target.value.length === 0) return setIOEnd(0);
-                    setIOEnd(parseInt(e.target.value, 16));
+                    const value = parseInt(e.target.value, 16);
+                    if (value > 255) return;
+                    setIOEnd(value);
                   }}
                 />
               </div>

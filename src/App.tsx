@@ -232,11 +232,7 @@ function App() {
       return;
     }
 
-    if (fsHandle) {
-      const writable = await fsHandle.createWritable();
-      await writable.write(JSON.stringify(memory));
-      await writable.close();
-    } else
+    if (!fsHandle)
       fsHandle = await window.showSaveFilePicker({
         suggestedName: "Bisk-8 Memory " + getCurrentDateTime() + ".json",
         types: [
@@ -247,7 +243,12 @@ function App() {
             },
           },
         ],
+        excludeAcceptAllOption: true,
       });
+
+    const writable = await fsHandle.createWritable();
+    await writable.write(JSON.stringify(memory));
+    await writable.close();
 
     unsavedChanges = false;
   }
@@ -314,8 +315,20 @@ function App() {
   }
 
   async function openConnection() {
-    if (port) return;
+    if (port) {
+      reader!.cancel();
+      writer!.close();
 
+      setTimeout(async () => {
+        await port!.close();
+        setConnected(false);
+        port = null;
+        writer = null;
+        reader = null;
+      }, 100);
+
+      return;
+    }
     try {
       port = await navigator.serial.requestPort();
       await port.open({ baudRate: 9600 });
@@ -369,7 +382,7 @@ function App() {
     }
   }
 
-  async function handleSerialRequest(message: string) {
+  function handleSerialRequest(message: string) {
     // Lê considerando < no início
     // Operação (0 read, 1 write) + endereço 8 bits hexa
     // + [valor 8 bits hexa] e \n no final
@@ -393,11 +406,12 @@ function App() {
       if (operation === 0x01 && data.length >= 4) {
         const value = parseInt(data[3] + data[4], 16);
 
-        currentMemory[address] = value;
+        const newMemory = [...currentMemory];
+        newMemory[address] = value;
 
-        setMemory(currentMemory);
+        setMemoryChange(newMemory);
 
-        console.log(`Write: Memory[${address}] = ${value}`);
+        // console.log(`Write: Memory[${address}] = ${value}`);
       }
       // Leitura
       else if (operation === 0x00) {
@@ -405,7 +419,8 @@ function App() {
         sendDataToSerial(
           `${valueToSend.toString(16).padStart(2, "0").toUpperCase()}\n`
         );
-        console.log(`Read: Memory[${address}] = ${valueToSend}`);
+
+        // console.log(`Read: Memory[${address}] = ${valueToSend}`);
       }
     } else {
       console.error(`Invalid message received: ${message}`);
