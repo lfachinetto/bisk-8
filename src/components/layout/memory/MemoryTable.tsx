@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import RegisterFile from "../../../models/registerFile";
 import styles from "./MemoryTable.module.css";
+import Memory from "../../../models/memory";
 
 enum Column {
   binary,
@@ -8,8 +9,8 @@ enum Column {
 }
 
 interface MemoryTableProps {
-  memory: number[];
-  setMemory: (memory: number[]) => void;
+  memory: Memory;
+  setMemory: (memory: Memory) => void;
   file: RegisterFile;
   setCurrentField: React.Dispatch<React.SetStateAction<number | undefined>>;
   height?: string;
@@ -36,15 +37,15 @@ function MemoryTable({
         break;
     }
 
-    setMemory(
-      memory.map((memoryValue, index) => {
-        return index === address
-          ? column === Column.binary
-            ? parseInt(value, 2)
-            : parseInt(value, 16)
-          : memoryValue;
-      })
-    );
+    memory.data = memory.data.map((memoryValue, index) => {
+      return index === address
+        ? column === Column.binary
+          ? parseInt(value, 2)
+          : parseInt(value, 16)
+        : memoryValue;
+    });
+
+    setMemory(memory);
 
     // Atualiza campo atual
     setCurrentField(
@@ -87,7 +88,7 @@ function MemoryTable({
             </tr>
           </thead>
           <tbody>
-            {memory.map((row, index) => (
+            {memory.data.map((row, index) => (
               <tr
                 ref={
                   index === file.registers["PC"].value ? currentRowRef : null

@@ -49,9 +49,7 @@ function RTLTable({ rtlLog }: RTLTableProps) {
               );
             })}
           </tbody>
-          <tfoot>
-            <div ref={tableEndRef} />
-          </tfoot>
+          <div ref={tableEndRef} />
         </table>
       </div>
     </center>

@@ -1,4 +1,5 @@
 import InstructionSet from "../../models/instructionSet";
+import MemoryModel from "../../models/memory";
 import RegisterFile from "../../models/registerFile";
 import ISATable from "../layout/memory/ISATable";
 import MemoryTable from "../layout/memory/MemoryTable";
@@ -6,8 +7,8 @@ import styles from "./Memory.module.css";
 import { useState } from "react";
 
 interface MemoryProps {
-  memory: number[];
-  setMemory: (memory: number[]) => void;
+  memory: MemoryModel;
+  setMemory: (memory: MemoryModel) => void;
   file: RegisterFile;
   isa: InstructionSet;
 }

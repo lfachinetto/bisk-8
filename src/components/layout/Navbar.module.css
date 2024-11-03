@@ -14,8 +14,12 @@
 .title {
   font-weight: bold;
   font-size: large;
-  flex-grow: 1;
-  text-align: center;
+  color: black;
+  vertical-align: middle;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
 }
 
 .button {

@@ -8,6 +8,7 @@ import styles from "./App.module.css";
 import Simulation from "./components/pages/Simulation";
 import SimulationToolbar from "./components/layout/simulation/SimulationToolbar";
 import MemoryToolbar from "./components/layout/memory/MemoryToolbar";
+import MemoryModel from "./models/memory";
 
 enum Phase {
   searchInstruction,
@@ -23,7 +24,7 @@ let unsavedChanges: boolean = false;
 let fsHandle: FileSystemFileHandle;
 
 // Variáveis com uso mais frequente que renderização
-let currentMemory = new Array(256).fill(0);
+let currentMemory = new MemoryModel();
 let currentRunning = false;
 let currentClock = 1;
 let currentIOBegin = 0xf0;
@@ -35,7 +36,7 @@ let writer: WritableStreamDefaultWriter<string> | null = null;
 
 function App() {
   const [registers, setRegisters] = useState<RegisterFile>(new RegisterFile());
-  const [memory, setMemory] = useState<number[]>(new Array(256).fill(0));
+  const [memory, setMemory] = useState<MemoryModel>(new MemoryModel());
   const [rtl, setRtl] = useState<string[]>([]);
   const [running, setRunning] = useState(false);
   const [clock, setClock] = useState(1);
@@ -179,7 +180,7 @@ function App() {
 
   function runInstruction(
     newRegisters: RegisterFile,
-    newMemory: number[],
+    newMemory: MemoryModel,
     newRtl: string[]
   ) {
     newRtl.push("#Ciclo de busca da instrução");
@@ -208,7 +209,7 @@ function App() {
   function clear() {
     inMiddleInst = false;
     setRegisters(new RegisterFile());
-    currentMemory = new Array(256).fill(0);
+    currentMemory.clear();
     setMemory(currentMemory);
     setRtl([]);
   }
@@ -276,7 +277,7 @@ function App() {
   function uploadMemory() {
     // Confirma limpeza de estado
     if (
-      (hasState() || memory.some((value) => value !== 0)) &&
+      (hasState() || memory.data.some((value) => value !== 0)) &&
       !window.confirm(
         "Ao fazer upload, os registradores e memória serão resetados. Deseja continuar?"
       )
@@ -345,6 +346,8 @@ function App() {
 
       readSerialData();
     } catch (error) {
+      if ((error as DOMException).name == "NotFoundError") return;
+
       setConnected(false);
       alert("Erro ao abrir conexão serial!");
       console.error("Error connecting to serial port:", error);
@@ -406,8 +409,8 @@ function App() {
       if (operation === 0x01 && data.length >= 4) {
         const value = parseInt(data[3] + data[4], 16);
 
-        const newMemory = [...currentMemory];
-        newMemory[address] = value;
+        const newMemory = currentMemory.clone();
+        newMemory.data[address] = value;
 
         setMemoryChange(newMemory);
 
@@ -415,7 +418,7 @@ function App() {
       }
       // Leitura
       else if (operation === 0x00) {
-        const valueToSend: number = currentMemory[address];
+        const valueToSend: number = currentMemory.data[address];
         sendDataToSerial(
           `${valueToSend.toString(16).padStart(2, "0").toUpperCase()}\n`
         );
@@ -433,7 +436,7 @@ function App() {
     }
   }
 
-  function setMemoryChange(memory: number[]) {
+  function setMemoryChange(memory: MemoryModel) {
     currentMemory = memory;
     setMemory(currentMemory);
   }
@@ -449,7 +452,7 @@ function App() {
       }
     };
 
-    if (memory.some((value) => value !== 0))
+    if (memory.data.some((value) => value !== 0))
       window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {

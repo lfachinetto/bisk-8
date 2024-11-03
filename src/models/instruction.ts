@@ -1,16 +1,17 @@
+import Memory from "./memory";
 import RegisterFile from "./registerFile";
 
 class Instruction {
   opcode: number;
   mnemonic: string;
   requiresAddress: boolean;
-  operation: ((file: RegisterFile, memory: number[]) => string)[];
+  operation: ((file: RegisterFile, memory: Memory) => string)[];
 
   constructor(
     opcode: number,
     mnemonic: string,
     requiresAddress: boolean,
-    operation: ((file: RegisterFile, memory: number[]) => string)[],
+    operation: ((file: RegisterFile, memory: Memory) => string)[],
   ) {
     this.opcode = opcode;
     this.mnemonic = mnemonic;

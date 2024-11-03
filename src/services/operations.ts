@@ -1,3 +1,4 @@
+import Memory from "../models/memory";
 import RegisterFile from "../models/registerFile";
 
 // Busca instrução (ciclo 0 a 3)
@@ -10,8 +11,8 @@ export const searchInstruction = [
     file.registers["MAR"].value = file.registers["PC"].value;
     return "MAR ← PC";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -22,7 +23,7 @@ export const searchInstruction = [
     return "PC ← PC + 1";
   },
   (file: RegisterFile): string => {
-    file.registers["IR"].value = file.registers["MDR"].value & 0x0F;
+    file.registers["IR"].value = file.registers["MDR"].value & 0x0f;
     return "IR ← MDR";
   },
 ];
@@ -36,8 +37,8 @@ export const searchAddress = [
     file.registers["MAR"].value = file.registers["PC"].value;
     return "MAR ← PC";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -65,8 +66,8 @@ export const lda = [
     file.registers["MAR"].value = file.registers["MDR"].value;
     return "MAR ← MDR";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -88,8 +89,8 @@ export const sta = [
     file.registers["MDR"].value = file.registers["ACC"].value;
     return "MDR ← ACC";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    memory[file.registers["MAR"].value] = file.registers["MDR"].value;
+  (file: RegisterFile, memory: Memory): string => {
+    memory.data[file.registers["MAR"].value] = file.registers["MDR"].value;
     return "MEM[MAR] ← MDR";
   },
 ];
@@ -103,8 +104,8 @@ export const add = [
     file.registers["MAR"].value = file.registers["MDR"].value;
     return "MAR ← MDR";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -125,8 +126,8 @@ export const sub = [
     file.registers["MAR"].value = file.registers["MDR"].value;
     return "MAR ← MDR";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -147,8 +148,8 @@ export const mul = [
     file.registers["MAR"].value = file.registers["MDR"].value;
     return "MAR ← MDR";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -169,8 +170,8 @@ export const div = [
     file.registers["MAR"].value = file.registers["MDR"].value;
     return "MAR ← MDR";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -201,8 +202,8 @@ export const and = [
     file.registers["MAR"].value = file.registers["MDR"].value;
     return "MAR ← MDR";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -222,8 +223,8 @@ export const or = [
     file.registers["MAR"].value = file.registers["MDR"].value;
     return "MAR ← MDR";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -244,8 +245,8 @@ export const xor = [
     file.registers["MAR"].value = file.registers["MDR"].value;
     return "MAR ← MDR";
   },
-  (file: RegisterFile, memory: number[]): string => {
-    file.registers["MDR"].value = memory[file.registers["MAR"].value];
+  (file: RegisterFile, memory: Memory): string => {
+    file.registers["MDR"].value = memory.data[file.registers["MAR"].value];
     return "MDR ← MEM[MAR]";
   },
   (file: RegisterFile): string => {
@@ -326,6 +327,6 @@ function testFlags(file: RegisterFile) {
 
 // Função para garantir complemento de 2 de 8 bits
 function toSigned8Bit(value: number) {
-  const maskedValue = value & 0xFF; // Aplica a máscara de 8 bits
+  const maskedValue = value & 0xff; // Aplica a máscara de 8 bits
   return maskedValue > 127 ? maskedValue - 256 : maskedValue; // Converte para complemento de 2
 }
