@@ -184,12 +184,12 @@ export const div = [
 ];
 
 // Instrução NOT
-// 4 ACC ← !ACC
+// 4 ACC ← ~ACC
 export const not = [
   (file: RegisterFile): string => {
     file.registers["ACC"].value = toSigned8Bit(~file.registers["ACC"].value);
     testFlags(file);
-    return "ACC ← !ACC";
+    return "ACC ← ~ACC";
   },
 ];
 
