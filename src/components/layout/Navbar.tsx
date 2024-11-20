@@ -21,7 +21,7 @@ function Navbar({
     <div className={styles.navbar}>
       <div className={styles.leftActions}>
         {openConnection && (
-          <div>
+          <div className={styles.serial}>
             <button
               className={styles.button}
               onClick={openConnection}
@@ -35,8 +35,10 @@ function Navbar({
               </span>
             </button>
             {connected ? (
-              <div>
+              <>
+                {"   "}
                 <input
+                  className={styles.input}
                   value={IOBegin.toString(16).padStart(2, "0").toUpperCase()}
                   onChange={(e) => {
                     if (e.target.value.length === 0) return setIOBegin(0);
@@ -45,8 +47,9 @@ function Navbar({
                     setIOBegin(parseInt(e.target.value, 16));
                   }}
                 />
-                {" a "}
+                {"a"}
                 <input
+                  className={styles.input}
                   value={IOEnd.toString(16).padStart(2, "0").toUpperCase()}
                   onChange={(e) => {
                     if (e.target.value.length === 0) return setIOEnd(0);
@@ -55,7 +58,7 @@ function Navbar({
                     setIOEnd(value);
                   }}
                 />
-              </div>
+              </>
             ) : (
               ""
             )}

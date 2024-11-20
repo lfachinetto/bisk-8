@@ -7,7 +7,7 @@ html {
 
 .container {
   display: flex;
-  height: 95%;
+  height: calc(100vh - 7vh);
 }
 
 .left,

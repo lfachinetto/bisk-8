@@ -44,7 +44,6 @@ function Memory({ memory, setMemory, file, isa }: MemoryProps) {
           <>
             <br />
             <h3>Instruções</h3>
-            <br />
             <ISATable isa={isa} field={currentField} />
           </>
         ) : (

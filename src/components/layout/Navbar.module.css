@@ -4,6 +4,7 @@
   padding: 11px;
   justify-content: space-between;
   align-items: center;
+  height: 7vh;
 }
 
 .leftActions {
@@ -43,4 +44,27 @@
 
 .circleConnected {
   font-size: 10px;
+}
+
+.input {
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  width: 45px;
+  height: 30px;
+  color: black;
+  vertical-align: middle;
+  background-color: #f4f4f4;
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  outline: none;
+}
+
+.serial {
+  display: flex;
+  align-items: center;
+  justify-content: 'space-between';
+  gap: 5px;
 }

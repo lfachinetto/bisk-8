@@ -1,8 +1,8 @@
 class Memory {
   data: number[];
 
-  constructor() {
-    this.data = Array(256).fill(0b0);
+  constructor(data: number[] = Array(256).fill(0b0)) {
+    this.data = data;
   }
 
   clear() {

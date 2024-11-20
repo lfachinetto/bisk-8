@@ -297,9 +297,8 @@ function App() {
           try {
             const text = e.target?.result as string;
             const newMemory = JSON.parse(text);
-            setMemory(newMemory);
-            setRegisters(new RegisterFile());
-            setRtl([]);
+            setMemoryChange(new MemoryModel(newMemory.data));
+            clearRegisters();
           } catch (e) {
             alert("Ocorreu um erro ao fazer upload do arquivo!");
           }
@@ -386,7 +385,6 @@ function App() {
   }
 
   function handleSerialRequest(message: string) {
-    // Lê considerando < no início
     // Operação (0 read, 1 write) + endereço 8 bits hexa
     // + [valor 8 bits hexa] e \n no final
 
