@@ -9,6 +9,7 @@ import Simulation from "./components/pages/Simulation";
 import SimulationToolbar from "./components/layout/simulation/SimulationToolbar";
 import MemoryToolbar from "./components/layout/memory/MemoryToolbar";
 import MemoryModel from "./models/memory";
+import ISATable from "./components/pages/ISA";
 
 enum Phase {
   searchInstruction,
@@ -57,7 +58,7 @@ function App() {
 
     if (phase === Phase.searchInstruction) {
       const length = searchInstruction.length;
-      if (cicle == 0) newRtl.push("#Ciclo de busca da instrução");
+      if (cicle == 0) newRtl.push("#Busca do opcode");
 
       newRtl.push(searchInstruction[cicle](newRegisters, currentMemory));
 
@@ -78,7 +79,7 @@ function App() {
       }
     } else if (phase === Phase.searchAddress) {
       const length = searchAddress.length;
-      if (cicle == 0) newRtl.push("#Ciclo de busca do endereço");
+      if (cicle == 0) newRtl.push("#Busca do endereço");
 
       newRtl.push(searchAddress[cicle](newRegisters, currentMemory));
 
@@ -94,7 +95,7 @@ function App() {
 
       const length = instruction.operation.length;
 
-      if (cicle == 0) newRtl.push("#Ciclo de execução da instrução");
+      if (cicle == 0) newRtl.push("#Execução da instrução");
 
       newRtl.push(instruction.operation[cicle](newRegisters, currentMemory));
 
@@ -183,7 +184,7 @@ function App() {
     newMemory: MemoryModel,
     newRtl: string[]
   ) {
-    newRtl.push("#Ciclo de busca da instrução");
+    newRtl.push("#Busca do opcode");
     // Realiza etapas de busca de instrução
     searchInstruction.forEach((cicle) => {
       newRtl.push(cicle(newRegisters, newMemory));
@@ -193,13 +194,13 @@ function App() {
 
     // Realiza etapas de busca de endereço (instruções de 2 bytes)
     if (instruction.requiresAddress) {
-      newRtl.push("#Ciclo de busca do endereço");
+      newRtl.push("#Busca do endereço");
       searchAddress.forEach((cicle) => {
         newRtl.push(cicle(newRegisters, newMemory));
       });
     }
 
-    newRtl.push("#Ciclo de execução da instrução");
+    newRtl.push("#Execução da instrução");
     // Executa operação da instrução
     instruction.operation.forEach((cicle) => {
       newRtl.push(cicle(newRegisters, newMemory));
@@ -499,7 +500,7 @@ function App() {
             isa={isa}
           />
         </div>
-        <div className={styles.right}>
+        <div className={styles.left}>
           <SimulationToolbar
             clearRegisters={clearRegisters}
             changeClock={(value) => {
@@ -509,6 +510,9 @@ function App() {
             clock={clock}
           />
           <Simulation registers={registers} isa={isa} rtl={rtl} />
+        </div>
+        <div className={styles.right}>
+          <ISATable isa={isa} field={0} />
         </div>
       </div>
     </>

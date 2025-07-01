@@ -12,7 +12,7 @@ html {
 
 .left,
 .right {
-  width: 50%;
+  width: 33%;
   padding: 0px;
   box-sizing: border-box;
 }
@@ -22,8 +22,8 @@ html {
 }
 
 table {
-  width: auto;
-  margin: 5px auto;
+  width: 100%;
+  margin: 5px 10px;
   border-collapse: collapse;
   table-layout: auto;
   overflow: auto;

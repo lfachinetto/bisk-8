@@ -1,6 +1,6 @@
 .tableContainer {
   display: flex;
-  height: 40vh;
+  /* height: 40vh; */
   width: 100%;
   overflow: auto;
   margin: 0 auto;

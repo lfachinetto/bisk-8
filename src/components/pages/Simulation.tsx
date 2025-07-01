@@ -12,9 +12,8 @@ interface SimulationProps {
 function Simulation({ registers, isa, rtl }: SimulationProps) {
   return (
     <>
-      <h2>Simulação</h2>
+      <h3>Simulação</h3>
       <RegisterTable file={registers} isa={isa} />
-      {rtl.length > 0 ? <h3>Log de execução</h3> : ""}
       <RTLTable rtlLog={rtl} />
     </>
   );

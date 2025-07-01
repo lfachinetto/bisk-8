@@ -1,6 +1,6 @@
 .tableContainer {
   display: flex;
-  height: 35vh;
+  height: 45vh;
   width: 100%;
   overflow: auto;
   margin: 0 auto;
@@ -9,12 +9,24 @@
 
 .title {
   font-weight: bold;
+  text-align: left;
+  color: lightgreen;
 }
 
 .left{
   text-align: left;
+  padding: 1px 0px 0px 15px ;
 }
 
 td{
   font-size: 12px;
+}
+
+.logtable{
+  background-color: #1a1a1a;
+  color: whitesmoke;
+}
+
+.logtable td{
+  border: 0px;
 }

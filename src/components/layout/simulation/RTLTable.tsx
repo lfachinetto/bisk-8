@@ -25,24 +25,26 @@ function RTLTable({ rtlLog }: RTLTableProps) {
   return rtlLog.length === 0 ? (
     <></>
   ) : (
-    <center>
+    <div>
+      <br />
+      <h3>Log de execução</h3>
       <div className={styles.tableContainer}>
-        <table>
+        <table className={styles.logtable}>
           <tbody>
             {rtlLog.map((rtl, i) => {
               const isComment = rtl.slice(0, 1) == "#";
               return (
                 <React.Fragment key={i}>
-                  {isComment && i > 0 ? (
+                  {/* {isComment && i > 0 ? (
                     <tr>
                       <td />
                     </tr>
                   ) : (
                     ""
-                  )}
+                  )} */}
                   <tr>
                     <td className={isComment ? styles.title : styles.left}>
-                      {isComment ? rtl.slice(1) : rtl}
+                      {isComment ? rtl.slice(1)+":" : rtl}
                     </td>
                   </tr>
                 </React.Fragment>
@@ -52,7 +54,7 @@ function RTLTable({ rtlLog }: RTLTableProps) {
           <div ref={tableEndRef} />
         </table>
       </div>
-    </center>
+    </div>
   );
 }
 

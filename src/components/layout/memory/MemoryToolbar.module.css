@@ -1,23 +1,23 @@
 .button {
-  font-size: 20px;
-  padding: 0px;
+  padding: 2px;
   margin-left: 5px;
   border: none;
-  background-color: #f0f0f0;
+  background-color: lightgray;
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }
 
 .button:hover {
-  background-color: #e0e0e0;
+  background-color: #a0a0a0;
 }
 
 .actionBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px;
+  padding: 2px;
+  background-color: lightgray;
 }
 
 .leftActions,

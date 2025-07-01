@@ -19,7 +19,7 @@ class Instruction {
     this.operation = operation;
   }
 
-  getHexaOpcode(): string {
+  getHexOpcode(): string {
     return this.opcode.toString(16).toUpperCase();
   }
 }

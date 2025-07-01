@@ -57,7 +57,7 @@ function ISATable({ isa, field }: ISATableProps) {
                       .padStart(8, "0")
                       .toUpperCase()}
                   </td>
-                  <td>{instruction.getHexaOpcode().padStart(2, "0")}</td>
+                  <td>{instruction.getHexOpcode().padStart(2, "0")}</td>
                   <td>{instruction.requiresAddress ? "Sim" : "Não"}</td>
                 </tr>
               );

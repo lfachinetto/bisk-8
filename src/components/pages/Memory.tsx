@@ -21,16 +21,16 @@ function Memory({ memory, setMemory, file, isa }: MemoryProps) {
 
   return (
     <div>
-      <h2>
+      <h3>
         Memória
-        <button
+        {/* <button
           className={styles.button}
           onClick={() => setShowISA(!showISA)}
           title="Visualizar ISA"
         >
           <span className="material-symbols-outlined">info</span>
-        </button>
-      </h2>
+        </button> */}
+      </h3>
 
       <center>
         <MemoryTable
@@ -43,7 +43,7 @@ function Memory({ memory, setMemory, file, isa }: MemoryProps) {
         {showISA ? (
           <>
             <br />
-            <h2>Instruções</h2>
+            <h3>Instruções</h3>
             <ISATable isa={isa} field={currentField} />
           </>
         ) : (
