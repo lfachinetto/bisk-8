@@ -38,12 +38,12 @@ function Memory({ memory, setMemory, file, isa }: MemoryProps) {
           setMemory={setMemory}
           file={file}
           setCurrentField={setCurrentField}
-          height={showISA ? "40" : "75"}
+          height={showISA ? "41" : "80"}
         />
         {showISA ? (
           <>
             <br />
-            <h3>Instruções</h3>
+            <h2>Instruções</h2>
             <ISATable isa={isa} field={currentField} />
           </>
         ) : (

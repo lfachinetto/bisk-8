@@ -41,7 +41,7 @@ function RTLTable({ rtlLog }: RTLTableProps) {
                     ""
                   )}
                   <tr>
-                    <td className={isComment ? styles.title : ""}>
+                    <td className={isComment ? styles.title : styles.left}>
                       {isComment ? rtl.slice(1) : rtl}
                     </td>
                   </tr>

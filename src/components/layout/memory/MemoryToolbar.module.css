@@ -1,6 +1,7 @@
 .button {
   font-size: 20px;
-  padding: 5px;
+  padding: 0px;
+  margin-left: 5px;
   border: none;
   background-color: #f0f0f0;
   cursor: pointer;
@@ -16,7 +17,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 5px;
 }
 
 .leftActions,

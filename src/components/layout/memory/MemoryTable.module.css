@@ -25,6 +25,8 @@
   padding: 0;
   margin: 0;
   text-align: center;
+  font-family: Courier, monospace;
+  font-size: 14px;
 }
 
 .input:focus {

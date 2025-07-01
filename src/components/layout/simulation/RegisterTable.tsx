@@ -51,7 +51,7 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
           <tr>
             <th>Registrador</th>
             <th>Binário</th>
-            <th>Hexadecimal</th>
+            <th>Hexa</th>
           </tr>
         </thead>
         <tbody>
@@ -60,7 +60,7 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
             return (
               <tr key={i}>
                 <td>{register.name}</td>
-                <td>
+                <td className={styles.right}>
                   {(register.value & 0xff)
                     .toString(2)
                     .padStart(register.bitLength, "0")

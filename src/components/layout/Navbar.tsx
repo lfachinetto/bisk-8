@@ -19,7 +19,7 @@ function Navbar({
 }: NavbarProps) {
   return (
     <div className={styles.navbar}>
-      <div className={styles.leftActions}>
+      {/* <div className={styles.leftActions}>
         {openConnection && (
           <div className={styles.serial}>
             <button
@@ -64,7 +64,7 @@ function Navbar({
             )}
           </div>
         )}
-      </div>
+      </div> */}
       <p className={styles.title}>Bisk-8 Simulator</p>
       <div className={styles.rightActions}>{/* Configurações e ajuda */}</div>
     </div>

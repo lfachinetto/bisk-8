@@ -30,7 +30,7 @@ function ISATable({ isa, field }: ISATableProps) {
             <tr>
               <th>Mnemônico</th>
               <th>Binário</th>
-              <th>Hexadecimal</th>
+              <th>Hexa</th>
               <th>Endereço?</th>
             </tr>
           </thead>

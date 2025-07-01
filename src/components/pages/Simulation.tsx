@@ -14,9 +14,7 @@ function Simulation({ registers, isa, rtl }: SimulationProps) {
     <>
       <h2>Simulação</h2>
       <RegisterTable file={registers} isa={isa} />
-      <br />
       {rtl.length > 0 ? <h3>Log de execução</h3> : ""}
-      <br />
       <RTLTable rtlLog={rtl} />
     </>
   );

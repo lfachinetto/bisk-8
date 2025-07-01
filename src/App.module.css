@@ -7,23 +7,23 @@ html {
 
 .container {
   display: flex;
-  height: calc(100vh - 7vh);
+  height: calc(100vh - 5vh);
 }
 
 .left,
 .right {
   width: 50%;
-  padding: 20px;
+  padding: 0px;
   box-sizing: border-box;
 }
 
 .left {
-  border-right: 15px solid grey;
+  border-right: 5px solid grey;
 }
 
 table {
   width: auto;
-  margin: 20px auto;
+  margin: 5px auto;
   border-collapse: collapse;
   table-layout: auto;
   overflow: auto;
@@ -31,16 +31,19 @@ table {
 
 th,
 td {
-  padding: 10px;
+  padding: 5px;
   border: 1px solid #ddd;
   cursor: pointer;
   text-align: center;
   word-wrap: break-word;
+  font-family: Courier, monospace;
+  font-size: 14px;
 }
 
 th {
   background-color: #f4f4f4;
 }
+
 
 h1,
 h2,

@@ -1,6 +1,6 @@
 .tableContainer {
   display: flex;
-  height: 30vh;
+  height: 35vh;
   width: 100%;
   overflow: auto;
   margin: 0 auto;
@@ -9,4 +9,12 @@
 
 .title {
   font-weight: bold;
+}
+
+.left{
+  text-align: left;
+}
+
+td{
+  font-size: 12px;
 }

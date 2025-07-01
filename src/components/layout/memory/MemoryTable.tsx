@@ -84,7 +84,7 @@ function MemoryTable({
             <tr>
               <th className={styles.address}>Endereço</th>
               <th>Binário</th>
-              <th>Hexadecimal</th>
+              <th>Hexa</th>
             </tr>
           </thead>
           <tbody>
