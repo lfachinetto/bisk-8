@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
-import styles from "./RTLTable.module.css";
+import styles from "./LogTable.module.css";
 import React from "react";
 
-interface RTLTableProps {
+interface LogTableProps {
   rtlLog: string[];
 }
 
-function RTLTable({ rtlLog }: RTLTableProps) {
+function LogTable({ rtlLog }: LogTableProps) {
   const tableEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToEnd = () => {
@@ -58,4 +58,4 @@ function RTLTable({ rtlLog }: RTLTableProps) {
   );
 }
 
-export default RTLTable;
+export default LogTable;

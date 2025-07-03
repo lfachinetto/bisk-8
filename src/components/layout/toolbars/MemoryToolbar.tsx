@@ -1,4 +1,4 @@
-import styles from "./MemoryToolbar.module.css";
+import styles from "./Toolbar.module.css";
 
 interface MemoryToolbarProps {
   clear: () => void;

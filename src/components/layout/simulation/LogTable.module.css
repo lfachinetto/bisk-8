@@ -5,6 +5,7 @@
   overflow: auto;
   margin: 0 auto;
   align-items: flex-start;
+  background-color: #1a1a1a;
 }
 
 .title {
@@ -22,8 +23,7 @@ td{
   font-size: 12px;
 }
 
-.logtable{
-  background-color: #1a1a1a;
+.logtable{  
   color: whitesmoke;
 }
 

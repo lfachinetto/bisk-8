@@ -6,10 +6,10 @@ import InstructionSet from "./models/instructionSet";
 import { searchAddress, searchInstruction } from "./services/operations";
 import styles from "./App.module.css";
 import Simulation from "./components/pages/Simulation";
-import SimulationToolbar from "./components/layout/simulation/SimulationToolbar";
-import MemoryToolbar from "./components/layout/memory/MemoryToolbar";
+import SimulationToolbar from "./components/layout/toolbars/SimulationToolbar";
+import MemoryToolbar from "./components/layout/toolbars/MemoryToolbar";
 import MemoryModel from "./models/memory";
-import ISATable from "./components/pages/ISA";
+import ISATable from "./components/pages/ISATable";
 
 enum Phase {
   searchInstruction,
@@ -495,7 +495,6 @@ function App() {
             memory={memory}
             setMemory={setMemoryChange}
             file={registers}
-            isa={isa}
           />
         </div>
         <div className={styles.left}>

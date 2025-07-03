@@ -1,7 +1,7 @@
 import RegisterFile from "../../models/registerFile";
 import InstructionSet from "../../models/instructionSet";
 import RegisterTable from "../layout/simulation/RegisterTable";
-import RTLTable from "../layout/simulation/RTLTable";
+import LogTable from "../layout/simulation/LogTable";
 
 interface SimulationProps {
   registers: RegisterFile;
@@ -14,7 +14,7 @@ function Simulation({ registers, isa, rtl }: SimulationProps) {
     <>
       <h3>Simulação</h3>
       <RegisterTable file={registers} isa={isa} />
-      <RTLTable rtlLog={rtl} />
+      <LogTable rtlLog={rtl} />
     </>
   );
 }

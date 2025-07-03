@@ -1,5 +1,4 @@
-import styles from "./SimulationToolbar.module.css";
-import "./SimulationToolbar.module.css";
+import styles from "./Toolbar.module.css";
 
 interface SimulationToolbarProps {
   clearRegisters: () => void;
