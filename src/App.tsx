@@ -9,7 +9,7 @@ import Simulation from "./components/pages/Simulation";
 import SimulationToolbar from "./components/layout/toolbars/SimulationToolbar";
 import MemoryToolbar from "./components/layout/toolbars/MemoryToolbar";
 import MemoryModel from "./models/memory";
-import ISATable from "./components/pages/ISATable";
+import ISA from "./components/pages/ISA";
 
 enum Phase {
   searchInstruction,
@@ -509,7 +509,7 @@ function App() {
           <Simulation registers={registers} isa={isa} rtl={rtl} />
         </div>
         <div className={styles.right}>
-          <ISATable isa={isa} field={0} />
+          <ISA isa={isa} field={0} />
         </div>
       </div>
     </>

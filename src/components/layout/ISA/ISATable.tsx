@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import InstructionSet from "../../models/instructionSet";
+import sharedStyles from "../../shared.module.css"
+import InstructionSet from "../../../models/instructionSet";
 
 interface ISATableProps {
   isa: InstructionSet;
@@ -23,9 +24,7 @@ function ISATable({ isa, field }: ISATableProps) {
   }, [field]);
 
   return (
-    <div>
-      <div style={{ "height": "35px", "backgroundColor": "lightgray" }}></div>
-      <h3>ISA</h3>
+    <div className={sharedStyles.tableContainer}>
       <table>
         <thead>
           <tr>
@@ -52,7 +51,7 @@ function ISATable({ isa, field }: ISATableProps) {
                       : undefined,
                 }}
               >
-                <td>{instruction.mnemonic + (instruction.requiresAddress ? " op" : "")}</td>
+                <td className={sharedStyles.left}>{instruction.mnemonic + (instruction.requiresAddress ? " op" : "")}</td>
                 <td>
                   {instruction.opcode
                     .toString(2)
@@ -61,7 +60,7 @@ function ISATable({ isa, field }: ISATableProps) {
                 </td>
                 <td>{instruction.getHexOpcode()}</td>
                 {/* <td>{instruction.requiresAddress ? "✓" : ""}</td> */}
-                <td>{instruction.operationDescr}</td>
+                <td className={sharedStyles.left}>{instruction.operationDescr}</td>
                 <td>{instruction.affectFlags ? "✔" : ""}</td>
               </tr>
             );

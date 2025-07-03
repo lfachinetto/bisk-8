@@ -1,4 +1,4 @@
-import styles from "./RegisterTable.module.css";
+import sharedStyles from "../../shared.module.css"
 import RegisterFile from "../../../models/registerFile";
 import InstructionSet from "../../../models/instructionSet";
 import Register from "../../../models/register";
@@ -45,7 +45,7 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
   }
 
   return (
-    <div className={styles.tableContainer}>
+    <div className={sharedStyles.tableContainer}>
       <table>
         <thead>
           <tr>
@@ -60,7 +60,7 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
             return (
               <tr key={i}>
                 <td>{register.name}</td>
-                <td className={styles.right}>
+                <td className={sharedStyles.right}>
                   {(register.value & 0xff)
                     .toString(2)
                     .padStart(register.bitLength, "0")

@@ -42,9 +42,22 @@ th {
   background-color: rgba(128, 128, 128, 0.089);
 }
 
-
 h1,
 h2,
 h3 {
   text-align: center;
+}
+
+
+input {
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: center;
+  font-family: "Source Code Pro", monospace;
+  font-size: 12px;
+}
+
+input:focus {
+  outline-color: lightgray;
 }

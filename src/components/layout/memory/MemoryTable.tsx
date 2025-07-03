@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import RegisterFile from "../../../models/registerFile";
-import styles from "./MemoryTable.module.css";
+import sharedStyles from "../../shared.module.css"
 import Memory from "../../../models/memory";
 
 enum Column {
@@ -76,11 +76,11 @@ function MemoryTable({
 
   return (
     <>
-      <div className={styles.tableContainer}>
+      <div className={sharedStyles.tableContainer}>
         <table>
           <thead>
             <tr>
-              <th className={styles.address}>Endereço</th>
+              <th>Endereço</th>
               <th>Bin</th>
               <th>Hex</th>
             </tr>
@@ -99,12 +99,11 @@ function MemoryTable({
                       : undefined,
                 }}
               >
-                <td className={styles.addresshexa}>
+                <td>
                   {index.toString(16).padStart(2, "0").toUpperCase()}
                 </td>
                 <td>
                   <input
-                    className={styles.input}
                     type="text"
                     value={row.toString(2).padStart(8, "0")}
                     onChange={(e) => handleChange(e, Column.binary, index)}
@@ -114,7 +113,6 @@ function MemoryTable({
                 </td>
                 <td>
                   <input
-                    className={styles.input}
                     type="text"
                     value={row.toString(16).padStart(2, "0").toUpperCase()}
                     onChange={(e) => handleChange(e, Column.hexa, index)}

@@ -1,0 +1,19 @@
+.tableContainer {
+  display: flex;
+  width: 100%;
+  overflow: auto;
+  margin: 0 auto;
+  max-height: 80vh;
+}
+
+td.left {
+    text-align: left;
+}
+
+td.right {
+  text-align: right;
+}
+
+/* td:first-child{
+  background-color: rgba(128, 128, 128, 0.089);
+} */
