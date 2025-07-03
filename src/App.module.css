@@ -2,7 +2,6 @@ body,
 html {
   height: 100%;
   margin: 0;
-  font-family: Arial, sans-serif;
 }
 
 .container {
@@ -23,7 +22,7 @@ html {
 
 table {
   width: 100%;
-  margin: 5px 10px;
+  margin: 0;
   border-collapse: collapse;
   table-layout: auto;
   overflow: auto;
@@ -31,17 +30,16 @@ table {
 
 th,
 td {
+  font-family: "Source Code Pro", monospace;
+  font-size: 12px;
   padding: 5px;
   border: 1px solid #ddd;
-  cursor: pointer;
   text-align: center;
   word-wrap: break-word;
-  font-family: Courier, monospace;
-  font-size: 14px;
 }
 
 th {
-  background-color: #f4f4f4;
+  background-color: rgba(128, 128, 128, 0.089);
 }
 
 

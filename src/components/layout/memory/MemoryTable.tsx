@@ -13,15 +13,13 @@ interface MemoryTableProps {
   setMemory: (memory: Memory) => void;
   file: RegisterFile;
   setCurrentField: React.Dispatch<React.SetStateAction<number | undefined>>;
-  height?: string;
 }
 
 function MemoryTable({
   memory,
   setMemory,
   file,
-  setCurrentField,
-  height,
+  setCurrentField
 }: MemoryTableProps) {
   // Trata mudanças na tabela de memória
   function onDataTableChange(column: Column, address: number, value: string) {
@@ -78,13 +76,13 @@ function MemoryTable({
 
   return (
     <>
-      <div className={styles.tableContainer} style={{ height: `${height}vh` }}>
+      <div className={styles.tableContainer}>
         <table>
           <thead>
             <tr>
               <th className={styles.address}>Endereço</th>
-              <th>Binário</th>
-              <th>Hexa</th>
+              <th>Bin</th>
+              <th>Hex</th>
             </tr>
           </thead>
           <tbody>

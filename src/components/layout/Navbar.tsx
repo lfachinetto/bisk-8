@@ -66,7 +66,9 @@ function Navbar({
         )}
       </div> */}
       <p className={styles.title}>Bisk-8 Simulator</p>
-      <div className={styles.rightActions}>{/* Configurações e ajuda */}</div>
+      <div className={styles.rightActions}>
+        {/* Configurações e ajuda */}
+      </div>
     </div>
   );
 }

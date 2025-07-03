@@ -30,10 +30,10 @@ function ISATable({ isa, field }: ISATableProps) {
       <table>
         <thead>
           <tr>
-            <th>Mnemônico</th>
-            <th>Binário</th>
-            <th>Hexa</th>
-            <th>Op?</th>
+            <th>Instr</th>
+            <th>Bin</th>
+            <th>Hex</th>
+            <th>Operação</th>
           </tr>
         </thead>
         <tbody>
@@ -52,7 +52,7 @@ function ISATable({ isa, field }: ISATableProps) {
                 //       : undefined,
                 // }}
               >
-                <td>{instruction.mnemonic}</td>
+                <td>{instruction.mnemonic + (instruction.requiresAddress ? " op" : "")}</td>
                 <td>
                   {instruction.opcode
                     .toString(2)
@@ -60,7 +60,8 @@ function ISATable({ isa, field }: ISATableProps) {
                     .toUpperCase()}
                 </td>
                 <td>{instruction.getHexOpcode().padStart(2, "0")}</td>
-                <td>{instruction.requiresAddress ? "✓" : ""}</td>
+                {/* <td>{instruction.requiresAddress ? "✓" : ""}</td> */}
+                 <td>ACC ← ACC + MEM[op]</td>
               </tr>
             );
           })}

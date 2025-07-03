@@ -50,8 +50,8 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
         <thead>
           <tr>
             <th>Registrador</th>
-            <th>Binário</th>
-            <th>Hexa</th>
+            <th>Bin</th>
+            <th>Hex</th>
           </tr>
         </thead>
         <tbody>
