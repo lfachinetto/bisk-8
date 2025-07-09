@@ -8,11 +8,7 @@ interface ISAProps {
 
 function ISA({ isa, field }: ISAProps) {
   return (
-    <>
-      <div style={{ "height": "35px", "backgroundColor": "lightgray" }}></div>
-      <h3>Conjunto de Instruções</h3>
-      <ISATable isa={isa} field={0} />
-    </>
+    <ISATable isa={isa} field={0} />
   );
 }
 

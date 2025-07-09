@@ -12,7 +12,6 @@ interface SimulationProps {
 function Simulation({ registers, isa, rtl }: SimulationProps) {
   return (
     <>
-      <h3>Simulação</h3>
       <RegisterTable file={registers} isa={isa} />
       <LogTable rtlLog={rtl} />
     </>

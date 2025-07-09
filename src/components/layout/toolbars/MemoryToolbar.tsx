@@ -20,7 +20,7 @@ function MemoryToolbar({
   stop,
 }: MemoryToolbarProps) {
   return (
-    <div className={styles.actionBar}>
+    <header>
       <div className={styles.leftActions}>
         <button className={styles.button} onClick={clear} title="Limpar">
           <span className="material-symbols-outlined">delete</span>
@@ -69,7 +69,7 @@ function MemoryToolbar({
           <span className="material-symbols-outlined">step_into</span>
         </button>
       </div>
-    </div>
+    </header>
   );
 }
 

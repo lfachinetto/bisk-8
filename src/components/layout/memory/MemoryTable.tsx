@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import RegisterFile from "../../../models/registerFile";
-import sharedStyles from "../../shared.module.css"
+import styles from "./MemoryTable.module.css"
 import Memory from "../../../models/memory";
 
 enum Column {
@@ -75,57 +75,54 @@ function MemoryTable({
   }, [file]);
 
   return (
-    <>
-      <div className={sharedStyles.tableContainer}>
-        <table>
-          <thead>
-            <tr>
-              <th>Endereço</th>
-              <th>Bin</th>
-              <th>Hex</th>
-            </tr>
-          </thead>
-          <tbody>
-            {memory.data.map((row, index) => (
-              <tr
-                ref={
-                  index === file.registers["PC"].value ? currentRowRef : null
-                }
-                key={"memory" + index}
-                style={{
-                  backgroundColor:
-                    file.registers["PC"].value === index
-                      ? "lightblue"
-                      : undefined,
-                }}
-              >
-                <td>
-                  {index.toString(16).padStart(2, "0").toUpperCase()}
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={row.toString(2).padStart(8, "0")}
-                    onChange={(e) => handleChange(e, Column.binary, index)}
-                    onBlur={() => setCurrentField(undefined)}
-                    onFocus={() => setCurrentField(row)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={row.toString(16).padStart(2, "0").toUpperCase()}
-                    onChange={(e) => handleChange(e, Column.hexa, index)}
-                    onBlur={() => setCurrentField(undefined)}
-                    onFocus={() => setCurrentField(row)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
+    <table className={styles.memorytable}>
+      <caption>Memória</caption>
+      <thead>
+        <tr>
+          <th>Endereço</th>
+          <th>Bin</th>
+          <th>Hex</th>
+        </tr>
+      </thead>
+      <tbody>
+        {memory.data.map((row, index) => (
+          <tr
+            ref={
+              index === file.registers["PC"].value ? currentRowRef : null
+            }
+            key={"memory" + index}
+            style={{
+              backgroundColor:
+                file.registers["PC"].value === index
+                  ? "lightblue"
+                  : undefined,
+            }}
+          >
+            <td>
+              {index.toString(16).padStart(2, "0").toUpperCase()}
+            </td>
+            <td>
+              <input
+                type="text"
+                value={row.toString(2).padStart(8, "0")}
+                onChange={(e) => handleChange(e, Column.binary, index)}
+                onBlur={() => setCurrentField(undefined)}
+                onFocus={() => setCurrentField(row)}
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                value={row.toString(16).padStart(2, "0").toUpperCase()}
+                onChange={(e) => handleChange(e, Column.hexa, index)}
+                onBlur={() => setCurrentField(undefined)}
+                onFocus={() => setCurrentField(row)}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 

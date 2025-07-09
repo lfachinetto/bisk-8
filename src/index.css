@@ -1,13 +1,119 @@
-* {
-  padding: 0;
+html,
+body {
+  height: 100%;
   margin: 0;
-  box-sizing: border-box;
+  padding: 0;
   font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
-html,
-body,
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 #root {
   background-color: #efefef;
-  height: 100%;
+}
+
+
+table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table thead tr{
+  border-top: 1px solid gray;
+}
+
+table tbody {
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+} 
+  
+tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border-bottom: 1px solid gray;
+}
+
+table 
+
+table caption {
+  font-weight: bold;
+  margin: 4px;
+  color: #000;
+}
+
+
+th,
+td {
+  font-family: "Source Code Pro", monospace;
+  font-size: 12px;
+  padding: 5px;
+  border-collapse: collapse;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+th {
+  background-color: rgba(128, 128, 128, 0.089);
+}
+
+h1,
+h2,
+h3 {
+  text-align: center;
+  margin: 0px;
+}
+
+main {
+  display: flex;
+  flex: 1;
+}
+
+section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid gray;
+}
+
+section:last-child {
+  border-right: none;
+}
+
+/* Topo de cada coluna */
+section>header {
+  height: 31px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 10px;
+  background-color: #e0e0e0;
+  border-bottom: 1px solid #ccc;
+}
+
+
+input {
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: center;
+  font-family: "Source Code Pro", monospace;
+  font-size: 12px;
+}
+
+input:focus {
+  outline-color: lightgray;
 }

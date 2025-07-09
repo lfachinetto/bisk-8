@@ -1,13 +1,13 @@
-import Navbar from "./components/layout/Navbar";
+import Header from "./components/layout/Header";
 import Memory from "./components/pages/Memory";
 import { useEffect, useState } from "react";
 import RegisterFile from "./models/registerFile";
 import InstructionSet from "./models/instructionSet";
 import { searchAddress, searchInstruction } from "./services/operations";
-import styles from "./App.module.css";
 import Simulation from "./components/pages/Simulation";
 import SimulationToolbar from "./components/layout/toolbars/SimulationToolbar";
 import MemoryToolbar from "./components/layout/toolbars/MemoryToolbar";
+import ISAToolbar from "./components/layout/toolbars/ISAToolbar";
 import MemoryModel from "./models/memory";
 import ISA from "./components/pages/ISA";
 
@@ -461,9 +461,7 @@ function App() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
-      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-      <Navbar
+       <Header
         openConnection={"serial" in navigator ? openConnection : null}
         connected={connected}
         IOBegin={IOBegin}
@@ -477,8 +475,8 @@ function App() {
           currentIOEnd = end;
         }}
       />
-      <div className={styles.container}>
-        <div className={styles.left}>
+      <main>
+        <section>
           <MemoryToolbar
             clear={clear}
             uploadMemory={uploadMemory}
@@ -496,8 +494,8 @@ function App() {
             setMemory={setMemoryChange}
             file={registers}
           />
-        </div>
-        <div className={styles.left}>
+        </section>
+        <section>
           <SimulationToolbar
             clearRegisters={clearRegisters}
             changeClock={(value) => {
@@ -507,11 +505,12 @@ function App() {
             clock={clock}
           />
           <Simulation registers={registers} isa={isa} rtl={rtl} />
-        </div>
-        <div className={styles.right}>
+        </section>
+        <section>
+          <ISAToolbar></ISAToolbar>
           <ISA isa={isa} field={0} />
-        </div>
-      </div>
+        </section>
+      </main>
     </>
   );
 }

@@ -1,0 +1,10 @@
+ .registertable th:nth-child(1),
+ .registertable td:nth-child(1) {
+   width: 25%;
+ }
+
+ .registertable th:nth-child(2),
+ .registertable td:nth-child(2) {
+   width: 25%;
+ }
+

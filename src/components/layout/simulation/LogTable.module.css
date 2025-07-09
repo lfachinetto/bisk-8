@@ -1,28 +1,25 @@
-.tableContainer {
-  display: flex;
-  height: 45vh;
-  width: 100%;
-  overflow: auto;
-  margin: 0 auto;
-  align-items: flex-start;
-  background-color: #1a1a1a;
-}
-
-.title {
-  font-weight: bold;
-  text-align: left;
-  color: lightgreen;
-}
-
-.left{
-  text-align: left;
-  padding: 1px 0px 0px 15px ;
-}
-
-.logtable{  
+.logtable {
+  background-color: black;
   color: whitesmoke;
 }
 
-.logtable td{
+.logtable td {
   border: 0px;
+  text-align: left;
+  padding: 1px 0px 0px 15px;
+}
+
+.logtable td.title {
+  font-weight: bold;
+  text-align: left;
+  color: lightgreen;
+  padding-left: 5px !important;
+}
+
+.logtable tfoot{
+  display: none;
+}
+
+.logtable tr{
+  border: 0px !important
 }

@@ -1,3 +1,4 @@
+import styles from "./RegisterTable.module.css"
 import sharedStyles from "../../shared.module.css"
 import RegisterFile from "../../../models/registerFile";
 import InstructionSet from "../../../models/instructionSet";
@@ -45,34 +46,33 @@ function RegisterTable({ file, isa }: RegisterTableProps) {
   }
 
   return (
-    <div className={sharedStyles.tableContainer}>
-      <table>
-        <thead>
-          <tr>
-            <th>Registrador</th>
-            <th>Bin</th>
-            <th>Hex</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(file.registers).map((registerName, i) => {
-            const register = file.registers[registerName];
-            return (
-              <tr key={i}>
-                <td>{register.name}</td>
-                <td className={sharedStyles.right}>
-                  {(register.value & 0xff)
-                    .toString(2)
-                    .padStart(register.bitLength, "0")
-                    .toUpperCase()}
-                </td>
-                <td>{registerText(register)}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+    <table className={styles.registertable}>
+      <caption>Registradores</caption>
+      <thead>
+        <tr>
+          <th>Registrador</th>
+          <th className={sharedStyles.right}>Bin</th>
+          <th>Hex</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Object.keys(file.registers).map((registerName, i) => {
+          const register = file.registers[registerName];
+          return (
+            <tr key={i}>
+              <td>{register.name}</td>
+              <td className={sharedStyles.right}>
+                {(register.value & 0xff)
+                  .toString(2)
+                  .padStart(register.bitLength, "0")
+                  .toUpperCase()}
+              </td>
+              <td>{registerText(register)}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
   );
 }
 

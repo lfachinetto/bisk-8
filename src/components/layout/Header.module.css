@@ -1,9 +1,11 @@
-.navbar {
-  display: flex;
-  background-color: grey;
-  justify-content: space-between;
-  align-items: center;
-  height: 5vh;
+header {
+  background-color: gray;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+header h1 {
+  font-size: 1.2em;
 }
 
 .leftActions {
@@ -11,30 +13,20 @@
   gap: 10px;
 }
 
-.title {
-  font-weight: bold;
-  font-size: large;
-  color: black;
-  vertical-align: middle;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-}
-
 .button {
   font-size: 20px;
   padding: 0px;
-  margin-left: 5px;
+  margin-left: 2px;
   border: none;
-  background-color: grey;
+  background-color: #e0e0e0;
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }
 
 .button:hover {
-  background-color: #a0a0a0;}
+  background-color: #a0a0a0;
+}
 
 .rightActions {
   display: flex;

@@ -1,6 +1,6 @@
-import styles from "./Navbar.module.css";
+import styles from "./Header.module.css";
 
-interface NavbarProps {
+interface HeaderProps {
   openConnection: (() => Promise<void>) | null;
   connected: boolean;
   IOBegin: number;
@@ -9,16 +9,16 @@ interface NavbarProps {
   setIOEnd: (end: number) => void;
 }
 
-function Navbar({
+function Header({
   openConnection,
   connected,
   IOBegin,
   setIOBegin,
   IOEnd,
   setIOEnd,
-}: NavbarProps) {
+}: HeaderProps) {
   return (
-    <div className={styles.navbar}>
+    <header className={styles.navbar}>
       {/* <div className={styles.leftActions}>
         {openConnection && (
           <div className={styles.serial}>
@@ -65,12 +65,12 @@ function Navbar({
           </div>
         )}
       </div> */}
-      <p className={styles.title}>Bisk-8 Simulator</p>
+      <h1>Bisk-8 Simulator</h1>
       <div className={styles.rightActions}>
         {/* Configurações e ajuda */}
       </div>
-    </div>
+    </header>
   );
 }
 
-export default Navbar;
+export default Header;

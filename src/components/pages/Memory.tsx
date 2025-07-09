@@ -15,16 +15,12 @@ function Memory({ memory, setMemory, file }: MemoryProps) {
   );
 
   return (
-    <div>
-      <h3>Memória</h3>
-
-      <MemoryTable
-        memory={memory}
-        setMemory={setMemory}
-        file={file}
-        setCurrentField={setCurrentField}
-      />
-    </div>
+    <MemoryTable
+      memory={memory}
+      setMemory={setMemory}
+      file={file}
+      setCurrentField={setCurrentField}
+    />
   );
 }
 
