@@ -6,7 +6,7 @@ interface MemoryToolbarProps {
   save: () => void;
   runAll: (() => void) | null;
   runInstByInst: (() => void) | null;
-  runCicleByCicle: () => void;
+  runCycleByCycle: () => void;
   stop: () => void;
 }
 
@@ -16,7 +16,7 @@ function MemoryToolbar({
   save,
   runAll,
   runInstByInst,
-  runCicleByCicle,
+  runCycleByCycle,
   stop,
 }: MemoryToolbarProps) {
   return (
@@ -63,7 +63,7 @@ function MemoryToolbar({
         )}
         <button
           className={styles.button}
-          onClick={runCicleByCicle}
+          onClick={runCycleByCycle}
           title="Executar ciclo por ciclo"
         >
           <span className="material-symbols-outlined">step_into</span>

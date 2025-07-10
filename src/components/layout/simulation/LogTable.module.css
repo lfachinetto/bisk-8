@@ -16,10 +16,16 @@
   padding-left: 5px !important;
 }
 
-.logtable tfoot{
+.logtable tfoot {
   display: none;
 }
 
-.logtable tr{
+.logtable tr {
   border: 0px !important
+}
+
+.logtable tbody {
+  max-height: calc(100vh - 315px);
+  min-height: calc(100vh - 315px);
+  overflow-y: scroll;
 }

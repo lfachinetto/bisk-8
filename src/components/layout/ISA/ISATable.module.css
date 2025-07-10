@@ -1,24 +1,28 @@
-  .ISAtable tbody {
-    max-height: calc(100vh - 117px);
-  }
+.ISAtable {
+  min-width: 380px;
+}
 
-  .ISAtable th:nth-child(1),
-  .ISAtable td:nth-child(1) {
-    width: 14%;
-  }
+.ISAtable tbody {
+  max-height: calc(100vh - 117px);
+}
 
-  .ISAtable th:nth-child(2),
-  .ISAtable td:nth-child(2) {
-    width: 18%;
-  }
+.ISAtable th:nth-child(1),
+.ISAtable td:nth-child(1) {
+  width: 14%;
+}
 
-  .ISAtable th:nth-child(3),
-  .ISAtable td:nth-child(3) {
-    width: 7%;
-  }
+.ISAtable th:nth-child(2),
+.ISAtable td:nth-child(2) {
+  width: 18%;
+}
+
+.ISAtable th:nth-child(3),
+.ISAtable td:nth-child(3) {
+  width: 7%;
+}
 
 
-  .ISAtable th:nth-child(4),
-  .ISAtable td:nth-child(4) {
-    width: 3%;
-  }
+.ISAtable th:nth-child(4),
+.ISAtable td:nth-child(4) {
+  width: 3%;
+}

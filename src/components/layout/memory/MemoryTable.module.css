@@ -1,16 +1,16 @@
-  .memorytable tbody {
-    max-height: calc(100vh - 117px);
-  }
+.memorytable tbody {
+  max-height: calc(100vh - 117px);
+}
 
-  .memorytable th:nth-child(1),
-  .memorytable td:nth-child(1) {
-    width: 25%;
-  }
+.memorytable th:nth-child(1),
+.memorytable td:nth-child(1) {
+  width: 25%;
+}
 
-  .memorytable th:nth-child(2) {
-    width: 48%;
-  }
+.memorytable th:nth-child(2) {
+  width: 48%;
+}
 
-  .memorytable td:nth-child(2) {
-    width: 50%;
-  }
+.memorytable td:nth-child(2) {
+  width: 50%;
+}

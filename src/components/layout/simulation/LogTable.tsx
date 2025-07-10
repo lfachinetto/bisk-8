@@ -7,39 +7,27 @@ interface LogTableProps {
 }
 
 function LogTable({ rtlLog }: LogTableProps) {
-  const tableEndRef = useRef<HTMLTableCellElement>(null);
-
-  const scrollToEnd = () => {
-    if (tableEndRef.current) {
-      tableEndRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  };
+  const lastRowRef = useRef<HTMLTableRowElement>(null);
 
   useEffect(() => {
-    scrollToEnd();
+    lastRowRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   }, [rtlLog]);
 
-  return rtlLog.length === 0 ? (
-    <></>
-  ) : (
+  if (rtlLog.length === 0) return null;
+
+  return (
     <table className={styles.logtable}>
       <caption>Log de execução</caption>
       <tbody>
         {rtlLog.map((rtl, i) => {
           const isComment = rtl.slice(0, 1) == "#";
+          const isLast = i === rtlLog.length - 1;
           return (
             <React.Fragment key={i}>
-              {/* {isComment && i > 0 ? (
-                    <tr>
-                      <td />
-                    </tr>
-                  ) : (
-                    ""
-                  )} */}
-              <tr>
+              <tr ref={isLast ? lastRowRef : undefined}>
                 <td className={isComment ? styles.title : ""}>
                   {isComment ? rtl.slice(1) + ":" : rtl}
                 </td>
@@ -48,9 +36,6 @@ function LogTable({ rtlLog }: LogTableProps) {
           );
         })}
       </tbody>
-      <tfoot>
-        <tr><td ref={tableEndRef}>Invisible! Just for scrolling</td></tr>
-      </tfoot>
     </table>
   );
 }

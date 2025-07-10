@@ -46,7 +46,7 @@ function App() {
   const [IOEnd, setIOEnd] = useState<number>(0xff);
   const isa = new InstructionSet();
 
-  function runCicleByCicle() {
+  function runCycleByCycle() {
     if (registers.registers["HLT"].value === 1) {
       alert("Halted!");
       return;
@@ -461,7 +461,7 @@ function App() {
 
   return (
     <>
-       <Header
+      <Header
         openConnection={"serial" in navigator ? openConnection : null}
         connected={connected}
         IOBegin={IOBegin}
@@ -487,7 +487,7 @@ function App() {
               currentRunning = false;
             }}
             runInstByInst={inMiddleInst ? null : runInstByInst}
-            runCicleByCicle={runCicleByCicle}
+            runCycleByCycle={runCycleByCycle}
           />
           <Memory
             memory={memory}
