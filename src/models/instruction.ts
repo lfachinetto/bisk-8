@@ -15,7 +15,7 @@ class Instruction {
     requiresAddress: boolean,
     operation: ((file: RegisterFile, memory: Memory) => string)[],
     operationDescr: string,
-    affectFlags: boolean 
+    affectFlags: boolean
   ) {
     this.opcode = opcode;
     this.mnemonic = mnemonic;
@@ -27,6 +27,10 @@ class Instruction {
 
   getHexOpcode(): string {
     return this.opcode.toString(16).toUpperCase().padStart(2, "0");
+  }
+
+  getBinOpcode(): string {
+    return this.opcode.toString(16).toUpperCase().padStart(8, "0");
   }
 }
 

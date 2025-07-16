@@ -11,17 +11,11 @@ interface ISATableProps {
 function ISATable({ isa, field }: ISATableProps) {
   const isaRef = useRef<HTMLTableRowElement>(null);
 
-  const scrollToPos = () => {
-    if (isaRef.current) {
-      isaRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  };
-
   useEffect(() => {
-    scrollToPos();
+    isaRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   }, [field]);
 
   return (
@@ -47,20 +41,10 @@ function ISATable({ isa, field }: ISATableProps) {
             <tr
               key={i}
               ref={isCurrent ? isaRef : undefined}
-              style={{
-                color:
-                  isCurrent
-                    ? "blue"
-                    : undefined,
-              }}
+            // style={{ color: isCurrent ? "blue" : undefined }}
             >
               <td className={sharedStyles.left}>{instruction.mnemonic + (instruction.requiresAddress ? " op" : "")}</td>
-              <td>
-                {instruction.opcode
-                  .toString(2)
-                  .padStart(8, "0")
-                  .toUpperCase()}
-              </td>
+              <td>{instruction.getBinOpcode()}</td>
               <td>{instruction.getHexOpcode()}</td>
               <td>{instruction.affectFlags ? "✔" : ""}</td>
               <td className={sharedStyles.left}>{instruction.operationDescr}</td>
