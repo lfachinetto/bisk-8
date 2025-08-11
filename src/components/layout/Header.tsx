@@ -10,12 +10,12 @@ interface HeaderProps {
 }
 
 function Header({
-  openConnection,
-  connected,
-  IOBegin,
-  setIOBegin,
-  IOEnd,
-  setIOEnd,
+  // openConnection,
+  // connected,
+  // IOBegin,
+  // setIOBegin,
+  // IOEnd,
+  // setIOEnd,
 }: HeaderProps) {
   return (
     <header className={styles.navbar}>

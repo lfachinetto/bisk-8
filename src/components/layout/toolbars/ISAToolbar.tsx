@@ -1,5 +1,3 @@
-import styles from "./Toolbar.module.css";
-
 interface ISAToolbarProps {
 }
 

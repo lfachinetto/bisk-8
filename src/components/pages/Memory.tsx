@@ -1,7 +1,7 @@
 import MemoryModel from "../../models/memory";
 import RegisterFile from "../../models/registerFile";
 import MemoryTable from "../layout/memory/MemoryTable";
-import { useState } from "react";
+// import { useState } from "react";
 
 interface MemoryProps {
   memory: MemoryModel;
@@ -10,16 +10,16 @@ interface MemoryProps {
 }
 
 function Memory({ memory, setMemory, file }: MemoryProps) {
-  const [currentField, setCurrentField] = useState<number | undefined>(
-    undefined
-  );
+  // const [ currentField, setCurrentField] = useState<number | undefined>(
+  //   undefined
+  // );
 
   return (
     <MemoryTable
       memory={memory}
       setMemory={setMemory}
       file={file}
-      setCurrentField={setCurrentField}
+      // setCurrentField={setCurrentField}
     />
   );
 }

@@ -5,11 +5,11 @@ class RegisterFile {
 
   constructor() {
     this.registers = {
-      IR: new Register("IR", 4, 0b0),
       PC: new Register("PC", 8, 0b0),
+      ACC: new Register("ACC", 8, 0b0),
       MAR: new Register("MAR", 8, 0b0),
       MDR: new Register("MDR", 8, 0b0),
-      ACC: new Register("ACC", 8, 0b0),
+      IR: new Register("IR", 4, 0b0),
       PSR: new Register("PSR", 2, 0b0),
       HLT: new Register("HLT", 1, 0b0),
     };

@@ -17,10 +17,10 @@ class InstructionSet {
       0b1000: new Instruction(0b1000, "AND", true, operations.and, "ACC ← ACC & MEM[op]", true),
       0b1001: new Instruction(0b1001, "OR", true, operations.or, "ACC ← ACC | MEM[op]", true),
       0b1010: new Instruction(0b1010, "XOR", true, operations.xor, "ACC ← ACC ^ MEM[op]", true),
-      0b1011: new Instruction(0b1110, "TST", false, operations.tst, "ACC ← ACC", true),
-      0b1100: new Instruction(0b1011, "JMP", true, operations.jmp, "PC ← op", false),
-      0b1101: new Instruction(0b1100, "JZF", true, operations.jzf, "if ZF: PC ← op", false),
-      0b1110: new Instruction(0b1101, "JSF", true, operations.jsf, "if SF: PC ← op", false),
+      0b1011: new Instruction(0b1011, "TST", false, operations.tst, "ACC ← ACC", true),
+      0b1100: new Instruction(0b1100, "JMP", true, operations.jmp, "PC ← op", false),
+      0b1101: new Instruction(0b1101, "JZF", true, operations.jzf, "if ZF: PC ← op", false),
+      0b1110: new Instruction(0b1110, "JSF", true, operations.jsf, "if SF: PC ← op", false),
       0b1111: new Instruction(0b1111, "HLT", false, operations.hlt, "Stop", false),
     };
   }

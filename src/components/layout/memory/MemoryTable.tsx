@@ -12,14 +12,14 @@ interface MemoryTableProps {
   memory: Memory;
   setMemory: (memory: Memory) => void;
   file: RegisterFile;
-  setCurrentField: React.Dispatch<React.SetStateAction<number | undefined>>;
+  // setCurrentField: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
 function MemoryTable({
   memory,
   setMemory,
   file,
-  setCurrentField
+  // setCurrentField
 }: MemoryTableProps) {
   // Trata mudanças na tabela de memória
   function onDataTableChange(column: Column, address: number, value: string) {
@@ -46,9 +46,9 @@ function MemoryTable({
     setMemory(memory);
 
     // Atualiza campo atual
-    setCurrentField(
-      column === Column.binary ? parseInt(value, 2) : parseInt(value, 16)
-    );
+    // setCurrentField(
+    //   column === Column.binary ? parseInt(value, 2) : parseInt(value, 16)
+    // );
   }
 
   const handleChange = (
@@ -106,8 +106,8 @@ function MemoryTable({
                 type="text"
                 value={row.toString(2).padStart(8, "0")}
                 onChange={(e) => handleChange(e, Column.binary, index)}
-                onBlur={() => setCurrentField(undefined)}
-                onFocus={() => setCurrentField(row)}
+                // onBlur={() => setCurrentField(undefined)}
+                // onFocus={() => setCurrentField(row)}
               />
             </td>
             <td>
@@ -115,8 +115,8 @@ function MemoryTable({
                 type="text"
                 value={row.toString(16).padStart(2, "0").toUpperCase()}
                 onChange={(e) => handleChange(e, Column.hexa, index)}
-                onBlur={() => setCurrentField(undefined)}
-                onFocus={() => setCurrentField(row)}
+                // onBlur={() => setCurrentField(undefined)}
+                // onFocus={() => setCurrentField(row)}
               />
             </td>
           </tr>

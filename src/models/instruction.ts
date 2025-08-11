@@ -30,7 +30,7 @@ class Instruction {
   }
 
   getBinOpcode(): string {
-    return this.opcode.toString(16).toUpperCase().padStart(8, "0");
+    return this.opcode.toString(2).toUpperCase().padStart(8, "0");
   }
 }
 

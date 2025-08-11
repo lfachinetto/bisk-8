@@ -3,10 +3,10 @@ import InstructionSet from "../../models/instructionSet";
 
 interface ISAProps {
   isa: InstructionSet;
-  field: number | undefined;
+//  field: number | undefined;
 }
 
-function ISA({ isa, field }: ISAProps) {
+function ISA({ isa /*, field */}: ISAProps) {
   return (
     <ISATable isa={isa} field={0} />
   );

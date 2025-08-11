@@ -508,7 +508,7 @@ function App() {
         </section>
         <section>
           <ISAToolbar></ISAToolbar>
-          <ISA isa={isa} field={2} />
+          <ISA isa={isa} /* field={2} */ />
         </section>
       </main>
     </>
